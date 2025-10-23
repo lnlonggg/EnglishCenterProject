@@ -1,115 +1,80 @@
-E-Center: English Center Management Website
+# E-Center: English Center Management Website
 
-This is a university group project (Group 5 - DHTI16A4HN) to build a professional, full-featured web application for an English Center using .NET 8 and modern software architecture principles.
+> A professional web application for managing an English Center — developed as a university group project using **.NET 8**, **ASP.NET Core MVC**, and **modern software architecture principles**.
 
-1. Project Description
+---
 
-The primary goal of this project is to create a commercial-ready platform where students can browse, select, and enroll in courses, while administrators and teachers can manage the academic operations.
+## Project Overview
 
-The system is being built from the ground up, focusing on a clean, maintainable, and scalable architecture (applying SOLID principles) to serve as a high-quality portfolio piece.
+**E-Center** is a group project by **Group 5 - DHTI16A4HN**, aiming to build a **commercial-ready, full-featured web platform** for an English Center.
 
-2. Core Features (Planned)
+The goal is to provide a seamless experience for students, teachers, and administrators — from course browsing to class management — all within a scalable, maintainable architecture that follows **SOLID principles** and **clean code practices**.
 
-The application will support three main user roles:
+---
 
-For Students (Public Users):
+## Core Features (Planned)
 
-Create an account and manage their profile.
+### For Students (Public Users)
+- Register and manage personal profiles.  
+- Browse a catalog of available courses (e.g., *"IELTS 6.5"*, *"TOEIC 750+"*).  
+- View detailed schedules, including:  
+  - **Class times** (e.g., *Mon-Wed, 18:00–20:00*).  
+  - **Start & end dates**.  
+  - **Format** (Online / Offline).  
+  - **Assigned Teacher** (name, bio, photo).  
+- Enroll in classes that match their schedule.  
+- Track enrollment history.
 
-Browse a catalog of available courses (e.g., "IELTS 6.5", "TOEIC 750+").
+---
 
-View detailed class schedules for each course, including:
+### For Admins (Admin Dashboard)
+- Full **CRUD** for:
+  - Courses  
+  - Classes (create, schedule, assign teachers)  
+  - Teacher profiles  
+- Manage user accounts (Students & Teachers).  
+- View all enrollments (by class or by student).  
 
-Class times (e.g., "Mon-Wed, 18:00-20:00").
+---
 
-Start and end dates.
+### For Teachers (Teacher Dashboard)
+- Log in to a personal dashboard.  
+- View assigned teaching schedule (list of classes).  
 
-Format (Online or Offline).
+---
 
-The assigned Teacher's profile (name, bio, photo).
+## Technology Stack
 
-Enroll in a specific class that fits their schedule.
+| Layer | Technology |
+|-------|-------------|
+| **Backend** | .NET 8 (C#) |
+| **Framework** | ASP.NET Core MVC |
+| **Architecture** | SOLID Principles, Service Layer Pattern |
+| **ORM** | Entity Framework Core 8 |
+| **Authentication** | .NET Identity |
+| **Frontend** | Razor Views (`.cshtml`) |
+| **Styling** | Tailwind CSS (via CDN) |
+| **Database** | SQL Server (development with SQLite or SQL Server Express) |
+| **Source Control** | Git & GitHub |
 
-View their enrollment history.
+---
 
-For Admins (Admin Dashboard):
+## Team Members (Group 5 - DHTI16A4HN)
 
-Full CRUD (Create, Read, Update, Delete) operations for Courses.
+| Student ID | Full Name | Class | Role | Tasks |
+|-------------|------------|--------|-------|--------|
+| 22103100235 | **Lý Ngọc Long** | DHTI16A4HN | Team Leader | — |
+| 22103100214 | **Nguyễn Hữu Lương** | DHTI16A4HN | Member | — |
+| 22103100217 | **Nguyễn Văn Diễm** | DHTI16A4HN | Member | — |
 
-Full CRUD operations for Classes (e.g., open a new class, set its schedule, assign a teacher).
+---
 
-Full CRUD operations for Teacher profiles.
+## Notes
 
-Manage user accounts (Students and Teachers).
+This is an **active academic project**.  
+The README will be updated as development progresses.  
+Stay tuned for new features, UI previews, and deployment instructions.
 
-View all enrollments by class or by student.
+---
 
-For Teachers (Teacher Dashboard):
-
-Log in to a simple, dedicated dashboard.
-
-View their assigned teaching schedule (a list of classes they are assigned to teach).
-
-3. Technology Stack
-
-Backend: .NET 8 (C#)
-
-Framework: ASP.NET Core MVC
-
-Architecture: SOLID Principles, Service Layer Pattern
-
-ORM: Entity Framework Core 8
-
-Authentication: .NET Identity
-
-Frontend: Razor Views (.cshtml)
-
-Styling: Tailwind CSS (via CDN)
-
-Database: SQL Server (development with SQLite or SQL Server Express)
-
-Source Control: Git & GitHub
-
-4. Team Members (Group 5)
-
-Student ID
-
-Full Name
-
-Class
-
-Role
-
-Tasks
-
-22103100235
-
-LÝ NGỌC LONG
-
-DHTI16A4HN
-
-Team Leader
-
-
-
-22103100214
-
-NGUYỄN HỮU LƯƠNG
-
-DHTI16A4HN
-
-Member
-
-
-
-22103100217
-
-NGUYỄN VĂN DIỄM
-
-DHTI16A4HN
-
-Member
-
-
-
-This is an active academic project. The README will be updated as the project progresses.
+⭐ *If you find this project interesting, feel free to star or follow the repository for updates!*
