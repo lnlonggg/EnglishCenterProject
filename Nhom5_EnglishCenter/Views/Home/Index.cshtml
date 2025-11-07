@@ -1,6 +1,9 @@
-﻿@{
+﻿@using TrungTamAnhNgu.Web.Models
+@model IEnumerable<Course>
+@{
     ViewData["Title"] = "Trang chủ";
 }
+
 
 <section class="bg-white">
     <div class="container mx-auto px-6 py-20 md:py-32 grid md:grid-cols-2 gap-12 items-center">
@@ -53,7 +56,7 @@
             <div class="bg-white p-8 rounded-lg shadow-lg text-center">
                 <div class="flex justify-center mb-4">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12 text-brand-blue">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.s" />
                     </svg>
                 </div>
                 <h3 class="text-xl font-bold text-gray-800 mb-2">Chứng chỉ Quốc tế</h3>
@@ -68,31 +71,38 @@
         <h2 class="text-3xl font-bold text-center text-gray-800 mb-12">
             Các khóa học Nổi bật
         </h2>
+
+       
         <div class="grid md:grid-cols-3 gap-8">
-            <div class="bg-gray-50 rounded-lg shadow-lg overflow-hidden">
-                <img src="https://placehold.co/400x250/E2E8F0/4A5568?text=IELTS+Foundation" alt="Khóa học IELTS" class="w-full h-48 object-cover">
-                <div class="p-6">
-                    <h3 class="text-xl font-bold text-brand-blue mb-2">IELTS Foundation</h3>
-                    <p class="text-gray-600 mb-4">Xây dựng nền tảng vững chắc cho kỳ thi IELTS, tập trung vào 4 kỹ năng.</p>
-                    <a href="#" class="font-medium text-brand-blue hover:text-blue-700">Xem chi tiết &rarr;</a>
-                </div>
-            </div>
-            <div class="bg-gray-50 rounded-lg shadow-lg overflow-hidden">
-                <img src="https://placehold.co/400x250/E2E8F0/4A5568?text=Giao+Tiep" alt="Khóa học Giao tiếp" class="w-full h-48 object-cover">
-                <div class="p-6">
-                    <h3 class="text-xl font-bold text-brand-blue mb-2">Giao tiếp Chuyên nghiệp</h3>
-                    <p class="text-gray-600 mb-4">Tự tin giao tiếp trong môi trường công sở, thuyết trình và đàm phán.</p>
-                    <a href="#" class="font-medium text-brand-blue hover:text-blue-700">Xem chi tiết &rarr;</a>
-                </div>
-            </div>
-            <div class="bg-gray-50 rounded-lg shadow-lg overflow-hidden">
-                <img src="https://placehold.co/400x250/E2E8F0/4A5568?text=TOEIC+Mastery" alt="Khóa học TOEIC" class="w-full h-48 object-cover">
-                <div class="p-6">
-                    <h3 class="text-xl font-bold text-brand-blue mb-2">TOEIC Mastery</h3>
-                    <p class="text-gray-600 mb-4">Luyện thi TOEIC cấp tốc, tập trung vào chiến lược làm bài và từ vựng.</p>
-                    <a href="#" class="font-medium text-brand-blue hover:text-blue-700">Xem chi tiết &rarr;</a>
-                </div>
-            </div>
+
+           
+            @if (Model != null && Model.Any())
+            {
+                @foreach (var course in Model)
+                {
+                    <div class="bg-gray-50 rounded-lg shadow-lg overflow-hidden">
+                        <img src="@course.ImageUrl" alt="Ảnh bìa khóa học @course.Title" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-brand-blue mb-2">@course.Title</h3>
+
+                            @if (!string.IsNullOrEmpty(course.Description))
+                            {
+                                <p class="text-gray-600 mb-4">@course.Description.Substring(0, Math.Min(course.Description.Length, 100))...</p>
+                            }
+                            else
+                            {
+                                <p class="text-gray-600 mb-4">Chưa có mô tả cho khóa học này.</p>
+                            }
+                            <a href="#" class="font-medium text-brand-blue hover:text-blue-700">Xem chi tiết &rarr;</a>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <p class="text-center col-span-3 text-gray-600">Hiện chưa có khóa học nổi bật nào.</p>
+            }
+
         </div>
     </div>
 </section>

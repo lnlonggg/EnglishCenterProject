@@ -1,10 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using TrungTamAnhNgu.Web.Data;
 using TrungTamAnhNgu.Web.Data.Seed;
 using TrungTamAnhNgu.Web.Models;
 using TrungTamAnhNgu.Web.Services;
-
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,8 +12,11 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
+
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultUI();
+
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddScoped<ICourseService, CourseService>();
@@ -31,8 +33,13 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapControllerRoute(
+    name: "AdminArea",
+    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
 app.MapControllerRoute(
     name: "default",
@@ -40,7 +47,6 @@ app.MapControllerRoute(
 
 app.MapRazorPages();
 
-//Sedding default data
 try
 {
     using (var scope = app.Services.CreateScope())

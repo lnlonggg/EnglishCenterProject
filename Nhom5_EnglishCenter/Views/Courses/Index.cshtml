@@ -1,0 +1,48 @@
+﻿@model IEnumerable<TrungTamAnhNgu.Web.Models.Course>
+@{
+    ViewData["Title"] = "Danh mục Khóa học";
+}
+
+<div class="bg-white py-24">
+    <div class="container mx-auto px-6">
+
+        <h1 class="text-4xl font-bold text-center text-brand-blue mb-16">
+            Tất cả Khóa học
+        </h1>
+
+        <div class="grid md:grid-cols-3 gap-8">
+
+            @if (Model != null && Model.Any())
+            {
+                @foreach (var course in Model)
+                {
+                    <div class="bg-gray-50 rounded-lg shadow-lg overflow-hidden">
+                        <img src="@course.ImageUrl" alt="Ảnh bìa khóa học @course.Title" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-brand-blue mb-2">@course.Title</h3>
+
+                            @if (!string.IsNullOrEmpty(course.Description))
+                            {
+                                <p class="text-gray-600 mb-4">@course.Description.Substring(0, Math.Min(course.Description.Length, 100))...</p>
+                            }
+                            else
+                            {
+                                <p class="text-gray-600 mb-4">Chưa có mô tả cho khóa học này.</p>
+                            }
+
+                            <a asp-controller="Courses" asp-action="Details" asp-route-id="@course.Id"
+                               class="font-medium text-brand-blue hover:text-blue-700">
+                                Xem chi tiết &rarr;
+                            </a>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <p class="text-center col-span-3 text-gray-600">Chưa có khóa học nào được mở.</p>
+            }
+
+        </div>
+    </div>
+</div>
