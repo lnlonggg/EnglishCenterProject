@@ -1,15 +1,29 @@
-﻿namespace TrungTamAnhNgu.Web.Models
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Security.Claims;
+
+namespace TrungTamAnhNgu.Web.Models
 {
-    // Đây là lớp POCO (Plain Old C# Object) đại diện cho dữ liệu
-    // Sẽ được ánh xạ tới bảng trong DB bởi Entity Framework Core
+
     public class Course
     {
         public int Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public decimal Price { get; set; }
-        public string? ImageUrl { get; set; } // Dấu ? cho phép giá trị là null
 
-        // Thêm các thuộc tính khác sau...
+        [Required]
+        [StringLength(200)]
+        public string Title { get; set; }
+
+        [Required]
+        public string Description { get; set; }
+
+        [Required]
+        [Column(TypeName = "decimal(18, 2)")]
+        public decimal Price { get; set; }
+
+        public int DurationInHours { get; set; }
+
+        public string? ImageUrl { get; set; }
+
+        public virtual ICollection<Class> Classes { get; set; } = new List<Class>();
     }
 }

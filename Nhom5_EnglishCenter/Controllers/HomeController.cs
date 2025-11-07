@@ -15,15 +15,9 @@ namespace TrungTamAnhNgu.Web.Controllers
 
         public IActionResult Index()
         {
-            // Chỉ cần trả về View
             return View();
         }
 
-        // Bỏ action "Privacy" không cần thiết
-        // public IActionResult Privacy()
-        // {
-        //     return View();
-        // }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
