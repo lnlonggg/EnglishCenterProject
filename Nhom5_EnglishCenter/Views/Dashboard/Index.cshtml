@@ -1,0 +1,50 @@
+﻿@model IEnumerable<TrungTamAnhNgu.Web.Models.Enrollment>
+@{
+    ViewData["Title"] = "Khóa học của tôi";
+}
+
+<div class="bg-white py-24">
+    <div class="container mx-auto px-6">
+
+        <h1 class="text-4xl font-bold text-center text-brand-blue mb-16">
+            Các khóa học của tôi
+        </h1>
+
+        <div class="overflow-x-auto shadow-md rounded-lg">
+            <table class="min-w-full bg-white">
+                <thead class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                    <tr>
+                        <th class="py-3 px-6 text-left">Khóa học / Lớp học</th>
+                        <th class="py-3 px-6 text-left">Lịch học</th>
+                        <th class="py-3 px-6 text-left">Giáo viên</th>
+                        <th class="py-3 px-6 text-left">Ngày đăng ký</th>
+                        <th class="py-3 px-6 text-center">Trạng thái</th>
+                    </tr>
+                </thead>
+                <tbody class="text-gray-600 text-sm font-light">
+                    @foreach (var enrollment in Model)
+                    {
+                        <tr class="border-b border-gray-200 hover:bg-gray-100">
+                            <td class="py-3 px-6 text-left whitespace-nowrap">
+                                <span class="font-medium">@enrollment.Class.Course.Title</span>
+                                <span class="block text-xs text-gray-500">Lớp: @enrollment.Class.ClassName</span>
+                            </td>
+                            <td class="py-3 px-6 text-left">
+                                @enrollment.Class.Schedule
+                            </td>
+                            <td class="py-3 px-6 text-left">
+                                @enrollment.Class.Teacher.ApplicationUser.FullName
+                            </td>
+                            <td class="py-3 px-6 text-left">
+                                @enrollment.EnrollmentDate.ToString("dd/MM/yyyy")
+                            </td>
+                            <td class="py-3 px-6 text-center">
+                                <span class="bg-green-200 text-green-800 py-1 px-3 rounded-full text-xs">Đã ghi danh</span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
