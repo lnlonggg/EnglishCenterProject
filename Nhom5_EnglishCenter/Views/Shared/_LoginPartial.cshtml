@@ -4,25 +4,32 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
-<ul class="navbar-nav">
 @if (SignInManager.IsSignedIn(User))
 {
-    <li class="nav-item">
-        <a id="manage" class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
-    </li>
-    <li class="nav-item">
-        <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-            <button id="logout" type="submit" class="nav-link btn btn-link text-dark border-0">Logout</button>
-        </form>
-    </li>
+    <a asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage" class="text-gray-600 hover:text-brand-blue font-medium">
+        Chào, @User.Identity.Name!
+    </a>
+
+    @if (User.IsInRole("Admin"))
+    {
+        <a asp-area="Admin" asp-controller="Courses" asp-action="Index" class="text-gray-600 hover:text-brand-blue font-medium">
+            Trang Quản lý
+        </a>
+    }
+
+    @if (User.IsInRole("Student"))
+    {
+        <a asp-controller="Dashboard" asp-action="Index" class="text-gray-600 hover:text-brand-blue font-medium">
+            Khóa học của tôi
+        </a>
+    }
+
+    <form class="inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+        <button type="submit" class="text-gray-600 hover:text-brand-blue font-medium">Đăng xuất</button>
+    </form>
 }
 else
 {
-    <li class="nav-item">
-        <a class="nav-link text-dark" id="register" asp-area="Identity" asp-page="/Account/Register">Register</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link text-dark" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
-    </li>
+    <a class="text-gray-600 hover:text-brand-blue font-medium" asp-area="Identity" asp-page="/Account/Register">Đăng ký</a>
+    <a class="bg-brand-yellow text-brand-blue px-5 py-2 rounded-full font-bold shadow-md hover:bg-yellow-400 transition duration-300" asp-area="Identity" asp-page="/Account/Login">Đăng nhập</a>
 }
-</ul>
