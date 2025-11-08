@@ -1,4 +1,5 @@
 ﻿@model TrungTamAnhNgu.Web.Models.Course
+@inject SignInManager<ApplicationUser> SignInManager
 @{
     ViewData["Title"] = Model.Title;
 }
@@ -66,9 +67,23 @@
                                         @lop.Teacher.ApplicationUser.FullName
                                     </td>
                                     <td class="py-3 px-6 text-center">
-                                        <a href="#" class="bg-brand-yellow text-brand-blue px-4 py-2 rounded-full font-bold shadow-md hover:bg-yellow-400 transition duration-300 text-xs">
-                                            Đăng ký ngay
-                                        </a>
+                                        @if (SignInManager.IsSignedIn(User))
+                                        {
+                                            <form asp-controller="Enrollment" asp-action="Enroll" method="post">
+                                                <input type="hidden" name="classId" value="@lop.Id" />
+                                                <button type="submit"
+                                                        class="bg-brand-yellow text-brand-blue px-4 py-2 rounded-full font-bold shadow-md hover:bg-yellow-400 transition duration-300 text-xs">
+                                                    Đăng ký ngay
+                                                </button>
+                                            </form>
+                                        }
+                                        else
+                                        {
+                                            <a asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@Url.Action("Details", "Courses", new { id = Model.Id })"
+                                               class="bg-gray-300 text-gray-700 px-4 py-2 rounded-full font-bold shadow-md hover:bg-gray-400 transition duration-300 text-xs">
+                                                Đăng nhập để đăng ký
+                                            </a>
+                                        }   
                                     </td>
                                 </tr>
                             }
