@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using TrungTamAnhNgu.Web.ViewModels;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -16,146 +18,179 @@ namespace Nhom5_EnglishCenter.Areas.Admin.Controllers
     public class TeachersController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public TeachersController(ApplicationDbContext context)
+        public TeachersController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
-        // GET: Admin/Teachers
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Teachers.Include(t => t.ApplicationUser);
-            return View(await applicationDbContext.ToListAsync());
+            var teachers = await _context.Teachers
+                                .Include(t => t.ApplicationUser)
+                                .ToListAsync();
+            return View(teachers);
         }
 
-        // GET: Admin/Teachers/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
+            if (id == null) return NotFound();
             var teacher = await _context.Teachers
                 .Include(t => t.ApplicationUser)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (teacher == null)
-            {
-                return NotFound();
-            }
-
+            if (teacher == null) return NotFound();
             return View(teacher);
         }
 
-        // GET: Admin/Teachers/Create
         public IActionResult Create()
         {
-            ViewData["ApplicationUserId"] = new SelectList(_context.Users, "Id", "Id");
             return View();
         }
 
-        // POST: Admin/Teachers/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Bio,AvatarUrl,ApplicationUserId")] Teacher teacher)
+        public async Task<IActionResult> Create(TeacherViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(teacher);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                var userExists = await _userManager.FindByEmailAsync(viewModel.Email);
+                if (userExists != null)
+                {
+                    ModelState.AddModelError("Email", "Email này đã được sử dụng.");
+                    return View(viewModel);
+                }
+
+                ApplicationUser newAppUser = new ApplicationUser
+                {
+                    UserName = viewModel.Email,
+                    Email = viewModel.Email,
+                    FullName = viewModel.FullName,
+                    EmailConfirmed = true
+                };
+
+                var result = await _userManager.CreateAsync(newAppUser, viewModel.Password);
+                if (result.Succeeded)
+                {
+                    await _userManager.AddToRoleAsync(newAppUser, "Teacher");
+
+                    Teacher newTeacherProfile = new Teacher
+                    {
+                        ApplicationUserId = newAppUser.Id,
+                        Bio = viewModel.Bio,
+                        AvatarUrl = viewModel.AvatarUrl
+                    };
+
+                    _context.Teachers.Add(newTeacherProfile);
+                    await _context.SaveChangesAsync();
+
+                    return RedirectToAction(nameof(Index));
+                }
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
             }
-            ViewData["ApplicationUserId"] = new SelectList(_context.Users, "Id", "Id", teacher.ApplicationUserId);
-            return View(teacher);
+            return View(viewModel);
         }
 
-        // GET: Admin/Teachers/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
+            var teacher = await _context.Teachers
+                .Include(t => t.ApplicationUser)
+                .FirstOrDefaultAsync(t => t.Id == id);
+            if (teacher == null) return NotFound();
 
-            var teacher = await _context.Teachers.FindAsync(id);
-            if (teacher == null)
+            TeacherEditViewModel viewModel = new TeacherEditViewModel
             {
-                return NotFound();
-            }
-            ViewData["ApplicationUserId"] = new SelectList(_context.Users, "Id", "Id", teacher.ApplicationUserId);
-            return View(teacher);
+                Id = teacher.Id,
+                Email = teacher.ApplicationUser.Email,
+                FullName = teacher.ApplicationUser.FullName,
+                Bio = teacher.Bio,
+                AvatarUrl = teacher.AvatarUrl
+            };
+
+            return View(viewModel);
         }
 
-        // POST: Admin/Teachers/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Bio,AvatarUrl,ApplicationUserId")] Teacher teacher)
+        public async Task<IActionResult> Edit(int id, TeacherEditViewModel viewModel)
         {
-            if (id != teacher.Id)
-            {
-                return NotFound();
-            }
+            if (id != viewModel.Id) return NotFound();
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(teacher);
+                    var teacherFromDb = await _context.Teachers
+                        .Include(t => t.ApplicationUser)
+                        .FirstOrDefaultAsync(t => t.Id == id);
+
+                    if (teacherFromDb == null) return NotFound();
+
+                    teacherFromDb.ApplicationUser.FullName = viewModel.FullName;
+                    teacherFromDb.ApplicationUser.Email = viewModel.Email;
+                    teacherFromDb.ApplicationUser.UserName = viewModel.Email;
+                    teacherFromDb.Bio = viewModel.Bio;
+                    teacherFromDb.AvatarUrl = viewModel.AvatarUrl;
+
+                    _context.Update(teacherFromDb);
+
+                    if (!string.IsNullOrEmpty(viewModel.NewPassword))
+                    {
+                        var token = await _userManager.GeneratePasswordResetTokenAsync(teacherFromDb.ApplicationUser);
+                        var result = await _userManager.ResetPasswordAsync(teacherFromDb.ApplicationUser, token, viewModel.NewPassword);
+                        if (!result.Succeeded)
+                        {
+                            foreach (var error in result.Errors)
+                            {
+                                ModelState.AddModelError(string.Empty, error.Description);
+                            }
+                            return View(viewModel);
+                        }
+                    }
+
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!TeacherExists(teacher.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    if (!TeacherExists(viewModel.Id)) return NotFound();
+                    else throw;
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ApplicationUserId"] = new SelectList(_context.Users, "Id", "Id", teacher.ApplicationUserId);
-            return View(teacher);
+            return View(viewModel);
         }
 
-        // GET: Admin/Teachers/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
+            if (id == null) return NotFound();
             var teacher = await _context.Teachers
                 .Include(t => t.ApplicationUser)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (teacher == null)
-            {
-                return NotFound();
-            }
-
+            if (teacher == null) return NotFound();
             return View(teacher);
         }
 
-        // POST: Admin/Teachers/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var teacher = await _context.Teachers.FindAsync(id);
+            var teacher = await _context.Teachers
+                .Include(t => t.ApplicationUser)
+                .FirstOrDefaultAsync(t => t.Id == id);
+
             if (teacher != null)
             {
                 _context.Teachers.Remove(teacher);
+                await _context.SaveChangesAsync();
+
+                await _userManager.DeleteAsync(teacher.ApplicationUser);
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 

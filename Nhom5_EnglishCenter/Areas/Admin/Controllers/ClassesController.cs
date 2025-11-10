@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TrungTamAnhNgu.Web.Data;
 using TrungTamAnhNgu.Web.Models;
 using Microsoft.AspNetCore.Authorization;
+using TrungTamAnhNgu.Web.ViewModels;
 
 namespace Nhom5_EnglishCenter.Areas.Admin.Controllers
 {
@@ -24,7 +21,7 @@ namespace Nhom5_EnglishCenter.Areas.Admin.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Classes.Include(c => c.Course).Include(c => c.Teacher);
+            var applicationDbContext = _context.Classes.Include(c => c.Course).Include(c => c.Teacher.ApplicationUser);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -37,7 +34,7 @@ namespace Nhom5_EnglishCenter.Areas.Admin.Controllers
 
             var classModel = await _context.Classes
                 .Include(c => c.Course)
-                .Include(c => c.Teacher)
+                .Include(c => c.Teacher.ApplicationUser)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (classModel == null)
             {
@@ -50,23 +47,37 @@ namespace Nhom5_EnglishCenter.Areas.Admin.Controllers
         public IActionResult Create()
         {
             ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Title");
-            ViewData["TeacherId"] = new SelectList(_context.Teachers, "Id", "ApplicationUserId");
+            ViewData["TeacherId"] = new SelectList(_context.Teachers.Include(t => t.ApplicationUser), "Id", "ApplicationUser.FullName");
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,ClassName,StartDate,EndDate,Schedule,MaxStudents,Format,Location,MeetingUrl,CourseId,TeacherId")] Class classModel)
+        public async Task<IActionResult> Create(ClassViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(classModel);
+                Class newClass = new Class
+                {
+                    ClassName = viewModel.ClassName,
+                    StartDate = viewModel.StartDate,
+                    EndDate = viewModel.EndDate,
+                    Schedule = viewModel.Schedule,
+                    MaxStudents = viewModel.MaxStudents,
+                    Format = viewModel.Format,
+                    Location = viewModel.Location,
+                    MeetingUrl = viewModel.MeetingUrl,
+                    CourseId = viewModel.CourseId,
+                    TeacherId = viewModel.TeacherId
+                };
+
+                _context.Add(newClass);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Title", classModel.CourseId);
-            ViewData["TeacherId"] = new SelectList(_context.Teachers, "Id", "ApplicationUserId", classModel.TeacherId);
-            return View(classModel);
+            ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Title", viewModel.CourseId);
+            ViewData["TeacherId"] = new SelectList(_context.Teachers.Include(t => t.ApplicationUser), "Id", "ApplicationUser.FullName", viewModel.TeacherId);
+            return View(viewModel);
         }
 
         public async Task<IActionResult> Edit(int? id)
@@ -81,16 +92,32 @@ namespace Nhom5_EnglishCenter.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Title", classModel.CourseId);
-            ViewData["TeacherId"] = new SelectList(_context.Teachers, "Id", "ApplicationUserId", classModel.TeacherId);
-            return View(classModel);
+
+            ClassViewModel viewModel = new ClassViewModel
+            {
+                Id = classModel.Id,
+                ClassName = classModel.ClassName,
+                StartDate = classModel.StartDate,
+                EndDate = classModel.EndDate,
+                Schedule = classModel.Schedule,
+                MaxStudents = classModel.MaxStudents,
+                Format = classModel.Format,
+                Location = classModel.Location,
+                MeetingUrl = classModel.MeetingUrl,
+                CourseId = classModel.CourseId,
+                TeacherId = classModel.TeacherId
+            };
+
+            ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Title", viewModel.CourseId);
+            ViewData["TeacherId"] = new SelectList(_context.Teachers.Include(t => t.ApplicationUser), "Id", "ApplicationUser.FullName", viewModel.TeacherId);
+            return View(viewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,ClassName,StartDate,EndDate,Schedule,MaxStudents,Format,Location,MeetingUrl,CourseId,TeacherId")] Class classModel)
+        public async Task<IActionResult> Edit(int id, ClassViewModel viewModel)
         {
-            if (id != classModel.Id)
+            if (id != viewModel.Id)
             {
                 return NotFound();
             }
@@ -99,12 +126,29 @@ namespace Nhom5_EnglishCenter.Areas.Admin.Controllers
             {
                 try
                 {
-                    _context.Update(classModel);
+                    var classFromDb = await _context.Classes.FindAsync(id);
+                    if (classFromDb == null)
+                    {
+                        return NotFound();
+                    }
+
+                    classFromDb.ClassName = viewModel.ClassName;
+                    classFromDb.StartDate = viewModel.StartDate;
+                    classFromDb.EndDate = viewModel.EndDate;
+                    classFromDb.Schedule = viewModel.Schedule;
+                    classFromDb.MaxStudents = viewModel.MaxStudents;
+                    classFromDb.Format = viewModel.Format;
+                    classFromDb.Location = viewModel.Location;
+                    classFromDb.MeetingUrl = viewModel.MeetingUrl;
+                    classFromDb.CourseId = viewModel.CourseId;
+                    classFromDb.TeacherId = viewModel.TeacherId;
+
+                    _context.Update(classFromDb);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ClassExists(classModel.Id))
+                    if (!ClassExists(viewModel.Id))
                     {
                         return NotFound();
                     }
@@ -115,9 +159,9 @@ namespace Nhom5_EnglishCenter.Areas.Admin.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Title", classModel.CourseId);
-            ViewData["TeacherId"] = new SelectList(_context.Teachers, "Id", "ApplicationUserId", classModel.TeacherId);
-            return View(classModel);
+            ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Title", viewModel.CourseId);
+            ViewData["TeacherId"] = new SelectList(_context.Teachers.Include(t => t.ApplicationUser), "Id", "ApplicationUser.FullName", viewModel.TeacherId);
+            return View(viewModel);
         }
 
         public async Task<IActionResult> Delete(int? id)
@@ -129,7 +173,7 @@ namespace Nhom5_EnglishCenter.Areas.Admin.Controllers
 
             var classModel = await _context.Classes
                 .Include(c => c.Course)
-                .Include(c => c.Teacher)
+                .Include(c => c.Teacher.ApplicationUser)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (classModel == null)
             {

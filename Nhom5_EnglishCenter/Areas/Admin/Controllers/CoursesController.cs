@@ -1,13 +1,14 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using TrungTamAnhNgu.Web.Data;
 using TrungTamAnhNgu.Web.Models;
+using Microsoft.AspNetCore.Authorization;
+using TrungTamAnhNgu.Web.ViewModels;
 
 namespace Nhom5_EnglishCenter.Areas.Admin.Controllers
 {
@@ -22,13 +23,11 @@ namespace Nhom5_EnglishCenter.Areas.Admin.Controllers
             _context = context;
         }
 
-        // GET: Admin/Courses
         public async Task<IActionResult> Index()
         {
             return View(await _context.Courses.ToListAsync());
         }
 
-        // GET: Admin/Courses/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -46,29 +45,33 @@ namespace Nhom5_EnglishCenter.Areas.Admin.Controllers
             return View(course);
         }
 
-        // GET: Admin/Courses/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Admin/Courses/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Description,Price,DurationInHours,ImageUrl")] Course course)
+        public async Task<IActionResult> Create(CourseViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(course);
+                Course newCourse = new Course
+                {
+                    Title = viewModel.Title,
+                    Description = viewModel.Description,
+                    Price = viewModel.Price,
+                    DurationInHours = viewModel.DurationInHours,
+                    ImageUrl = viewModel.ImageUrl
+                };
+
+                _context.Add(newCourse);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(course);
+            return View(viewModel);
         }
 
-        // GET: Admin/Courses/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -81,17 +84,25 @@ namespace Nhom5_EnglishCenter.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-            return View(course);
+
+            CourseViewModel viewModel = new CourseViewModel
+            {
+                Id = course.Id,
+                Title = course.Title,
+                Description = course.Description,
+                Price = course.Price,
+                DurationInHours = course.DurationInHours,
+                ImageUrl = course.ImageUrl
+            };
+
+            return View(viewModel);
         }
 
-        // POST: Admin/Courses/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,Price,DurationInHours,ImageUrl")] Course course)
+        public async Task<IActionResult> Edit(int id, CourseViewModel viewModel)
         {
-            if (id != course.Id)
+            if (id != viewModel.Id)
             {
                 return NotFound();
             }
@@ -100,12 +111,24 @@ namespace Nhom5_EnglishCenter.Areas.Admin.Controllers
             {
                 try
                 {
-                    _context.Update(course);
+                    var courseFromDb = await _context.Courses.FindAsync(id);
+                    if (courseFromDb == null)
+                    {
+                        return NotFound();
+                    }
+
+                    courseFromDb.Title = viewModel.Title;
+                    courseFromDb.Description = viewModel.Description;
+                    courseFromDb.Price = viewModel.Price;
+                    courseFromDb.DurationInHours = viewModel.DurationInHours;
+                    courseFromDb.ImageUrl = viewModel.ImageUrl;
+
+                    _context.Update(courseFromDb);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CourseExists(course.Id))
+                    if (!CourseExists(viewModel.Id))
                     {
                         return NotFound();
                     }
@@ -116,10 +139,9 @@ namespace Nhom5_EnglishCenter.Areas.Admin.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(course);
+            return View(viewModel);
         }
 
-        // GET: Admin/Courses/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -137,7 +159,6 @@ namespace Nhom5_EnglishCenter.Areas.Admin.Controllers
             return View(course);
         }
 
-        // POST: Admin/Courses/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
