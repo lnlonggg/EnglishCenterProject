@@ -1,53 +1,55 @@
 ﻿@model TrungTamAnhNgu.Web.ViewModels.CourseViewModel
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Tạo Khóa học mới";
 }
 
-<h1>Create</h1>
+<h1 class="text-3xl font-bold text-gray-800 mb-6">@ViewData["Title"]</h1>
 
-<h4>Course</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Price" class="control-label"></label>
-                <input asp-for="Price" class="form-control" />
-                <span asp-validation-for="Price" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DurationInHours" class="control-label"></label>
-                <input asp-for="DurationInHours" class="form-control" />
-                <span asp-validation-for="DurationInHours" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ImageUrl" class="control-label"></label>
-                <input asp-for="ImageUrl" class="form-control" />
-                <span asp-validation-for="ImageUrl" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
+<div class="bg-white shadow-md rounded-lg p-8 max-w-2xl">
+    <form asp-action="Create">
+        <div asp-validation-summary="ModelOnly" class="text-red-600 text-sm mb-4" role="alert"></div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+        <div class="mb-4">
+            <label asp-for="Title" class="block text-sm font-medium text-gray-700"></label>
+            <input asp-for="Title" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-blue focus:ring-brand-blue sm:text-sm" />
+            <span asp-validation-for="Title" class="text-red-600 text-sm"></span>
+        </div>
+
+        <div class="mb-4">
+            <label asp-for="Description" class="block text-sm font-medium text-gray-700"></label>
+            <textarea asp-for="Description" rows="4" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-blue focus:ring-brand-blue sm:text-sm"></textarea>
+            <span asp-validation-for="Description" class="text-red-600 text-sm"></span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+            <div>
+                <label asp-for="Price" class="block text-sm font-medium text-gray-700"></label>
+                <input asp-for="Price" type="number" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-blue focus:ring-brand-blue sm:text-sm" />
+                <span asp-validation-for="Price" class="text-red-600 text-sm"></span>
+            </div>
+            <div>
+                <label asp-for="DurationInHours" class="block text-sm font-medium text-gray-700"></label>
+                <input asp-for="DurationInHours" type="number" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-blue focus:ring-brand-blue sm:text-sm" />
+                <span asp-validation-for="DurationInHours" class="text-red-600 text-sm"></span>
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <label asp-for="ImageUrl" class="block text-sm font-medium text-gray-700"></label>
+            <input asp-for="ImageUrl" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-blue focus:ring-brand-blue sm:text-sm" />
+            <span asp-validation-for="ImageUrl" class="text-red-600 text-sm"></span>
+        </div>
+
+        <div class="mt-6 flex items-center space-x-4">
+            <input type="submit" value="Tạo mới" class="px-6 py-2 bg-brand-blue text-white rounded-lg shadow hover:bg-blue-700 transition duration-300 cursor-pointer" />
+            <a asp-action="Index" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition duration-300">Quay lại Danh sách</a>
+        </div>
+    </form>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

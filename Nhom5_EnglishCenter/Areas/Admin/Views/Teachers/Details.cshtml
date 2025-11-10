@@ -1,36 +1,43 @@
 ﻿@model TrungTamAnhNgu.Web.Models.Teacher
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Chi tiết Giáo viên";
 }
 
-<h1>Details</h1>
+<h1 class="text-3xl font-bold text-gray-800 mb-6">@ViewData["Title"]</h1>
 
-<div>
-    <h4>Teacher</h4>
+<div class="bg-white shadow-md rounded-lg p-8 max-w-2xl">
+    <h4 class="text-xl font-semibold text-brand-blue mb-4">@Model.ApplicationUser.FullName</h4>
     <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Bio)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Bio)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.AvatarUrl)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.AvatarUrl)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ApplicationUser)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ApplicationUser.Id)
-        </dd>
+    <dl class="mt-6 space-y-4">
+        <div class="grid grid-cols-3 gap-4">
+            <dt class="text-sm font-medium text-gray-500">
+                @Html.DisplayNameFor(model => model.ApplicationUser.Email)
+            </dt>
+            <dd class="text-sm text-gray-900 col-span-2">
+                @Html.DisplayFor(model => model.ApplicationUser.Email)
+            </dd>
+        </div>
+        <div class="grid grid-cols-3 gap-4">
+            <dt class="text-sm font-medium text-gray-500">
+                @Html.DisplayNameFor(model => model.Bio)
+            </dt>
+            <dd class="text-sm text-gray-900 col-span-2">
+                @Html.DisplayFor(model => model.Bio)
+            </dd>
+        </div>
+        <div class="grid grid-cols-3 gap-4">
+            <dt class="text-sm font-medium text-gray-500">
+                @Html.DisplayNameFor(model => model.AvatarUrl)
+            </dt>
+            <dd class="text-sm text-gray-900 col-span-2 break-all">
+                @Html.DisplayFor(model => model.AvatarUrl)
+            </dd>
+        </div>
     </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+
+    <div class="mt-6 flex items-center space-x-4">
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="px-6 py-2 bg-brand-blue text-white rounded-lg shadow hover:bg-blue-700 transition duration-300">Sửa</a>
+        <a asp-action="Index" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition duration-300">Quay lại Danh sách</a>
+    </div>
 </div>

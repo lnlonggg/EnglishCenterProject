@@ -1,48 +1,54 @@
 ﻿@model TrungTamAnhNgu.Web.Models.Course
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Chi tiết Khóa học";
 }
 
-<h1>Details</h1>
+<h1 class="text-3xl font-bold text-gray-800 mb-6">@ViewData["Title"]</h1>
 
-<div>
-    <h4>Course</h4>
+<div class="bg-white shadow-md rounded-lg p-8 max-w-2xl">
+    <h4 class="text-xl font-semibold text-brand-blue mb-4">@Model.Title</h4>
     <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Price)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Price)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DurationInHours)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DurationInHours)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ImageUrl)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ImageUrl)
-        </dd>
+    <dl class="mt-6 space-y-4">
+        <div class="grid grid-cols-3 gap-4">
+            <dt class="text-sm font-medium text-gray-500">
+                @Html.DisplayNameFor(model => model.Description)
+            </dt>
+            <dd class="text-sm text-gray-900 col-span-2">
+                @Html.DisplayFor(model => model.Description)
+            </dd>
+        </div>
+
+        <div class="grid grid-cols-3 gap-4">
+            <dt class="text-sm font-medium text-gray-500">
+                @Html.DisplayNameFor(model => model.Price)
+            </dt>
+            <dd class="text-sm text-gray-900 col-span-2">
+                @Html.DisplayFor(model => model.Price)
+            </dd>
+        </div>
+
+        <div class="grid grid-cols-3 gap-4">
+            <dt class="text-sm font-medium text-gray-500">
+                @Html.DisplayNameFor(model => model.DurationInHours)
+            </dt>
+            <dd class="text-sm text-gray-900 col-span-2">
+                @Html.DisplayFor(model => model.DurationInHours)
+            </dd>
+        </div>
+
+        <div class="grid grid-cols-3 gap-4">
+            <dt class="text-sm font-medium text-gray-500">
+                @Html.DisplayNameFor(model => model.ImageUrl)
+            </dt>
+            <dd class="text-sm text-gray-900 col-span-2 break-all">
+                @Html.DisplayFor(model => model.ImageUrl)
+            </dd>
+        </div>
     </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+
+    <div class="mt-6 flex items-center space-x-4">
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="px-6 py-2 bg-brand-blue text-white rounded-lg shadow hover:bg-blue-700 transition duration-300">Sửa</a>
+        <a asp-action="Index" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition duration-300">Quay lại Danh sách</a>
+    </div>
 </div>

@@ -1,79 +1,87 @@
 ﻿@model TrungTamAnhNgu.Web.ViewModels.ClassViewModel
-
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Chỉnh sửa Lớp học";
 }
 
-<h1>Edit</h1>
+<h1 class="text-3xl font-bold text-gray-800 mb-6">@ViewData["Title"]</h1>
 
-<h4>Class</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="ClassName" class="control-label"></label>
-                <input asp-for="ClassName" class="form-control" />
-                <span asp-validation-for="ClassName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="StartDate" class="control-label"></label>
-                <input asp-for="StartDate" class="form-control" />
-                <span asp-validation-for="StartDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="EndDate" class="control-label"></label>
-                <input asp-for="EndDate" class="form-control" />
-                <span asp-validation-for="EndDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Schedule" class="control-label"></label>
-                <input asp-for="Schedule" class="form-control" />
-                <span asp-validation-for="Schedule" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="MaxStudents" class="control-label"></label>
-                <input asp-for="MaxStudents" class="form-control" />
-                <span asp-validation-for="MaxStudents" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Format" class="control-label"></label>
-                <select asp-for="Format" class="form-control"></select>
-                <span asp-validation-for="Format" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Location" class="control-label"></label>
-                <input asp-for="Location" class="form-control" />
-                <span asp-validation-for="Location" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="MeetingUrl" class="control-label"></label>
-                <input asp-for="MeetingUrl" class="form-control" />
-                <span asp-validation-for="MeetingUrl" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CourseId" class="control-label"></label>
-                <select asp-for="CourseId" class="form-control" asp-items="ViewBag.CourseId"></select>
-                <span asp-validation-for="CourseId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="TeacherId" class="control-label"></label>
-                <select asp-for="TeacherId" class="form-control" asp-items="ViewBag.TeacherId"></select>
-                <span asp-validation-for="TeacherId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
+<div class="bg-white shadow-md rounded-lg p-8 max-w-2xl">
+    <form asp-action="Edit">
+        <div asp-validation-summary="ModelOnly" class="text-red-600 text-sm mb-4" role="alert"></div>
+        <input type="hidden" asp-for="Id" />
 
-<div>
-    <a asp-action="Index">Back to List</a>
+        <div class="mb-4">
+            <label asp-for="ClassName" class="block text-sm font-medium text-gray-700"></label>
+            <input asp-for="ClassName" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-blue focus:ring-brand-blue sm:text-sm" />
+            <span asp-validation-for="ClassName" class="text-red-600 text-sm"></span>
+        </div>
+
+        <div class="mb-4">
+            <label asp-for="CourseId" class="block text-sm font-medium text-gray-700"></label>
+            <select asp-for="CourseId" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-blue focus:ring-brand-blue sm:text-sm" asp-items="ViewBag.CourseId"></select>
+            <span asp-validation-for="CourseId" class="text-red-600 text-sm"></span>
+        </div>
+
+        <div class="mb-4">
+            <label asp-for="TeacherId" class="block text-sm font-medium text-gray-700"></label>
+            <select asp-for="TeacherId" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-blue focus:ring-brand-blue sm:text-sm" asp-items="ViewBag.TeacherId"></select>
+            <span asp-validation-for="TeacherId" class="text-red-600 text-sm"></span>
+        </div>
+
+        <div class="mb-4">
+            <label asp-for="Schedule" class="block text-sm font-medium text-gray-700"></label>
+            <input asp-for="Schedule" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-blue focus:ring-brand-blue sm:text-sm" />
+            <span asp-validation-for="Schedule" class="text-red-600 text-sm"></span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+            <div>
+                <label asp-for="StartDate" class="block text-sm font-medium text-gray-700"></label>
+                <input asp-for="StartDate" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-blue focus:ring-brand-blue sm:text-sm" />
+                <span asp-validation-for="StartDate" class="text-red-600 text-sm"></span>
+            </div>
+            <div>
+                <label asp-for="EndDate" class="block text-sm font-medium text-gray-700"></label>
+                <input asp-for="EndDate" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-blue focus:ring-brand-blue sm:text-sm" />
+                <span asp-validation-for="EndDate" class="text-red-600 text-sm"></span>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+            <div>
+                <label asp-for="MaxStudents" class="block text-sm font-medium text-gray-700"></label>
+                <input asp-for="MaxStudents" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-blue focus:ring-brand-blue sm:text-sm" />
+                <span asp-validation-for="MaxStudents" class="text-red-600 text-sm"></span>
+            </div>
+            <div>
+                <label asp-for="Format" class="block text-sm font-medium text-gray-700"></label>
+                <select asp-for="Format" asp-items="Html.GetEnumSelectList<ClassFormat>()" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-blue focus:ring-brand-blue sm:text-sm">
+                </select>
+                <span asp-validation-for="Format" class="text-red-600 text-sm"></span>
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <label asp-for="Location" class="block text-sm font-medium text-gray-700"></label>
+            <input asp-for="Location" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-blue focus:ring-brand-blue sm:text-sm" />
+            <span asp-validation-for="Location" class="text-red-600 text-sm"></span>
+        </div>
+
+        <div class="mb-4">
+            <label asp-for="MeetingUrl" class="block text-sm font-medium text-gray-700"></label>
+            <input asp-for="MeetingUrl" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-blue focus:ring-brand-blue sm:text-sm" />
+            <span asp-validation-for="MeetingUrl" class="text-red-600 text-sm"></span>
+        </div>
+
+        <div class="mt-6 flex items-center space-x-4">
+            <input type="submit" value="Lưu thay đổi" class="px-6 py-2 bg-brand-blue text-white rounded-lg shadow hover:bg-blue-700 transition duration-300 cursor-pointer" />
+            <a asp-action="Index" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition duration-300">Quay lại Danh sách</a>
+        </div>
+    </form>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

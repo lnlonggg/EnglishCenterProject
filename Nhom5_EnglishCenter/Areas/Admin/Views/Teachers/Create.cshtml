@@ -3,49 +3,52 @@
     ViewData["Title"] = "Tạo mới Giáo viên";
 }
 
-<h1>@ViewData["Title"]</h1>
-<h4>Giáo viên</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<h1 class="text-3xl font-bold text-gray-800 mb-6">@ViewData["Title"]</h1>
 
-            <div class="form-group">
-                <label asp-for="FullName" class="control-label"></label>
-                <input asp-for="FullName" class="form-control" />
-                <span asp-validation-for="FullName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Password" class="control-label"></label>
-                <input asp-for="Password" class="form-control" />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ConfirmPassword" class="control-label"></label>
-                <input asp-for="ConfirmPassword" class="form-control" />
-                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Bio" class="control-label"></label>
-                <input asp-for="Bio" class="form-control" />
-                <span asp-validation-for="Bio" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="AvatarUrl" class="control-label"></label>
-                <input asp-for="AvatarUrl" class="form-control" />
-                <span asp-validation-for="AvatarUrl" class="text-danger"></span>
-            </div>
+<div class="bg-white shadow-md rounded-lg p-8 max-w-2xl">
+    <form asp-action="Create">
+        <div asp-validation-summary="ModelOnly" class="text-red-600 text-sm mb-4" role="alert"></div>
 
-            <div class="form-group mt-3">
-                <input type="submit" value="Tạo mới" class="btn btn-primary" />
-                <a asp-action="Index" class="btn btn-secondary">Quay lại Danh sách</a>
-            </div>
-        </form>
-    </div>
+        <div class="mb-4">
+            <label asp-for="FullName" class="block text-sm font-medium text-gray-700"></label>
+            <input asp-for="FullName" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-blue focus:ring-brand-blue sm:text-sm" />
+            <span asp-validation-for="FullName" class="text-red-600 text-sm"></span>
+        </div>
+        <div class="mb-4">
+            <label asp-for="Email" class="block text-sm font-medium text-gray-700"></label>
+            <input asp-for="Email" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-blue focus:ring-brand-blue sm:text-sm" />
+            <span asp-validation-for="Email" class="text-red-600 text-sm"></span>
+        </div>
+        <div class="mb-4">
+            <label asp-for="Password" class="block text-sm font-medium text-gray-700"></label>
+            <input asp-for="Password" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-blue focus:ring-brand-blue sm:text-sm" />
+            <span asp-validation-for="Password" class="text-red-600 text-sm"></span>
+        </div>
+        <div class="mb-4">
+            <label asp-for="ConfirmPassword" class="block text-sm font-medium text-gray-700"></label>
+            <input asp-for="ConfirmPassword" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-blue focus:ring-brand-blue sm:text-sm" />
+            <span asp-validation-for="ConfirmPassword" class="text-red-600 text-sm"></span>
+        </div>
+        <div class="mb-4">
+            <label asp-for="Bio" class="block text-sm font-medium text-gray-700"></label>
+            <textarea asp-for="Bio" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-blue focus:ring-brand-blue sm:text-sm"></textarea>
+            <span asp-validation-for="Bio" class="text-red-600 text-sm"></span>
+        </div>
+        <div class="mb-4">
+            <label asp-for="AvatarUrl" class="block text-sm font-medium text-gray-700"></label>
+            <input asp-for="AvatarUrl" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-blue focus:ring-brand-blue sm:text-sm" />
+            <span asp-validation-for="AvatarUrl" class="text-red-600 text-sm"></span>
+        </div>
+
+        <div class="mt-6 flex items-center space-x-4">
+            <input type="submit" value="Tạo mới" class="px-6 py-2 bg-brand-blue text-white rounded-lg shadow hover:bg-blue-700 transition duration-300 cursor-pointer" />
+            <a asp-action="Index" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition duration-300">Quay lại Danh sách</a>
+        </div>
+    </form>
 </div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
