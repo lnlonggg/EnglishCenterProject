@@ -1,0 +1,40 @@
+﻿@inject SignInManager<ApplicationUser> SignInManager
+@using TrungTamAnhNgu.Web.Models
+
+@{
+    var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
+
+    string NavItemClass(string pageName)
+    {
+        var activeClass = "bg-brand-blue text-white";
+        var inactiveClass = "text-gray-700 hover:bg-gray-200 hover:text-gray-900";
+        var baseClass = "block w-full text-left px-4 py-2 rounded-md transition duration-300";
+
+        return ManageNavPages.PageNavClass(ViewContext, pageName) == "active" ? $"{baseClass} {activeClass}" : $"{baseClass} {inactiveClass}";
+    }
+}
+
+<ul class="flex flex-col space-y-2">
+    <li>
+        <a class="@NavItemClass(ManageNavPages.Index)" id="profile" asp-page="./Index">Profile</a>
+    </li>
+    <li>
+        <a class="@NavItemClass(ManageNavPages.Email)" id="email" asp-page="./Email">Email</a>
+    </li>
+    <li>
+        <a class="@NavItemClass(ManageNavPages.ChangePassword)" id="change-password" asp-page="./ChangePassword">Password</a>
+    </li>
+    @if (hasExternalLogins)
+    {
+        <li>
+            <a class="@NavItemClass(ManageNavPages.ExternalLogins)" id="external-login" asp-page="./ExternalLogins">External logins</a>
+        </li>
+    }
+    <li>
+        <a class="@NavItemClass(ManageNavPages.TwoFactorAuthentication)" id="two-factor" asp-page="./TwoFactorAuthentication">Two-factor authentication</a>
+    </li>
+    <li>
+        <a class="@NavItemClass(ManageNavPages.PersonalData)" id="personal-data" asp-page="./PersonalData">Personal data</a>
+    </li>
+</ul>
+</ul>
