@@ -19,7 +19,7 @@
 
     @if (User.IsInRole("Student"))
     {
-        <a asp-controller="Dashboard" asp-action="Index" class="text-gray-600 hover:text-brand-blue font-medium">
+        <a asp-area="" asp-controller="Dashboard" asp-action="Index" class="text-gray-600 hover:text-brand-blue font-medium">
             Khóa học của tôi
         </a>
     }
