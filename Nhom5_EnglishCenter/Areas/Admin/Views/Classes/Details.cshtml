@@ -5,7 +5,7 @@
 
 <h1 class="text-3xl font-bold text-gray-800 mb-6">@ViewData["Title"]</h1>
 
-<div class="bg-white shadow-md rounded-lg p-8 max-w-2xl">
+<div class="bg-white shadow-md rounded-lg p-8 max-w-4xl">
     <h4 class="text-xl font-semibold text-brand-blue mb-4">@Model.ClassName</h4>
     <hr />
     <dl class="mt-6 space-y-4">
@@ -22,33 +22,48 @@
             <dd class="text-sm text-gray-900 col-span-2">@Html.DisplayFor(model => model.Schedule)</dd>
         </div>
         <div class="grid grid-cols-3 gap-4">
-            <dt class="text-sm font-medium text-gray-500">@Html.DisplayNameFor(model => model.StartDate)</dt>
-            <dd class="text-sm text-gray-900 col-span-2">@Html.DisplayFor(model => model.StartDate)</dd>
-        </div>
-        <div class="grid grid-cols-3 gap-4">
-            <dt class="text-sm font-medium text-gray-500">@Html.DisplayNameFor(model => model.EndDate)</dt>
-            <dd class="text-sm text-gray-900 col-span-2">@Html.DisplayFor(model => model.EndDate)</dd>
-        </div>
-        <div class="grid grid-cols-3 gap-4">
-            <dt class="text-sm font-medium text-gray-500">@Html.DisplayNameFor(model => model.MaxStudents)</dt>
-            <dd class="text-sm text-gray-900 col-span-2">@Html.DisplayFor(model => model.MaxStudents)</dd>
+            <dt class="text-sm font-medium text-gray-500">Sĩ số</dt>
+            <dd class="text-sm text-gray-900 col-span-2">@Model.Enrollments.Count() / @Model.MaxStudents</dd>
         </div>
         <div class="grid grid-cols-3 gap-4">
             <dt class="text-sm font-medium text-gray-500">@Html.DisplayNameFor(model => model.Format)</dt>
             <dd class="text-sm text-gray-900 col-span-2">@Html.DisplayFor(model => model.Format)</dd>
-        </div>
-        <div class="grid grid-cols-3 gap-4">
-            <dt class="text-sm font-medium text-gray-500">@Html.DisplayNameFor(model => model.Location)</dt>
-            <dd class="text-sm text-gray-900 col-span-2">@Html.DisplayFor(model => model.Location)</dd>
-        </div>
-        <div class="grid grid-cols-3 gap-4">
-            <dt class="text-sm font-medium text-gray-500">@Html.DisplayNameFor(model => model.MeetingUrl)</dt>
-            <dd class="text-sm text-gray-900 col-span-2">@Html.DisplayFor(model => model.MeetingUrl)</dd>
         </div>
     </dl>
 
     <div class="mt-6 flex items-center space-x-4">
         <a asp-action="Edit" asp-route-id="@Model.Id" class="px-6 py-2 bg-brand-blue text-white rounded-lg shadow hover:bg-blue-700 transition duration-300">Sửa</a>
         <a asp-action="Index" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition duration-300">Quay lại Danh sách</a>
+    </div>
+</div>
+
+<div class="bg-white shadow-md rounded-lg p-8 max-w-4xl mt-8">
+    <h3 class="text-2xl font-bold text-gray-800 mb-6">Danh sách Sinh viên</h3>
+    <div class="overflow-x-auto shadow-md rounded-lg">
+        <table class="min-w-full bg-white">
+            <thead class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                <tr>
+                    <th class="py-3 px-6 text-left">Tên Sinh viên</th>
+                    <th class="py-3 px-6 text-left">Email</th>
+                    <th class="py-3 px-6 text-left">Ngày đăng ký</th>
+                </tr>
+            </thead>
+            <tbody class="text-gray-600 text-sm font-light">
+                @foreach (var enrollment in Model.Enrollments)
+                {
+                    <tr class="border-b border-gray-200 hover:bg-gray-100">
+                        <td class="py-3 px-6 text-left whitespace-nowrap">
+                            <span class="font-medium">@enrollment.Student.ApplicationUser.FullName</span>
+                        </td>
+                        <td class="py-3 px-6 text-left">
+                            @enrollment.Student.ApplicationUser.Email
+                        </td>
+                        <td class="py-3 px-6 text-left">
+                            @enrollment.EnrollmentDate.ToString("dd/MM/yyyy")
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
 </div>

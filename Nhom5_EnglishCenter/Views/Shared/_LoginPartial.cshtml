@@ -24,6 +24,13 @@
         </a>
     }
 
+    @if (User.IsInRole("Teacher"))
+    {
+        <a asp-area="" asp-controller="TeacherDashboard" asp-action="Index" class="text-gray-600 hover:text-brand-blue font-medium">
+            Lịch dạy của tôi
+        </a>
+    }
+
     <form class="inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
         <button type="submit" class="text-gray-600 hover:text-brand-blue font-medium">Đăng xuất</button>
     </form>

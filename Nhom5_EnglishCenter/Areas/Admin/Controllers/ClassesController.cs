@@ -25,6 +25,25 @@ namespace Nhom5_EnglishCenter.Areas.Admin.Controllers
             return View(await applicationDbContext.ToListAsync());
         }
 
+        //public async Task<IActionResult> Details(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    var classModel = await _context.Classes
+        //        .Include(c => c.Course)
+        //        .Include(c => c.Teacher.ApplicationUser)
+        //        .FirstOrDefaultAsync(m => m.Id == id);
+        //    if (classModel == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    return View(classModel);
+        //}
+
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -35,7 +54,11 @@ namespace Nhom5_EnglishCenter.Areas.Admin.Controllers
             var classModel = await _context.Classes
                 .Include(c => c.Course)
                 .Include(c => c.Teacher.ApplicationUser)
+                .Include(c => c.Enrollments)
+                    .ThenInclude(e => e.Student)
+                    .ThenInclude(s => s.ApplicationUser)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (classModel == null)
             {
                 return NotFound();

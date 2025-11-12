@@ -1,0 +1,51 @@
+﻿@model IEnumerable<TrungTamAnhNgu.Web.Models.Class>
+@{
+    ViewData["Title"] = "Lịch dạy của tôi";
+}
+
+<div class="bg-white py-24">
+    <div class="container mx-auto px-6">
+
+        <h1 class="text-4xl font-bold text-center text-brand-blue mb-16">
+            @ViewData["Title"]
+        </h1>
+
+        <div class="overflow-x-auto shadow-md rounded-lg">
+            <table class="min-w-full bg-white">
+                <thead class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                    <tr>
+                        <th class="py-3 px-6 text-left">Tên lớp</th>
+                        <th class="py-3 px-6 text-left">Thuộc Khóa học</th>
+                        <th class="py-3 px-6 text-left">Lịch học</th>
+                        <th class="py-3 px-6 text-left">Ngày khai giảng</th>
+                        <th class="py-3 px-6 text-center">Hành động</th>
+                    </tr>
+                </thead>
+                <tbody class="text-gray-600 text-sm font-light">
+                    @foreach (var lop in Model)
+                    {
+                        <tr class="border-b border-gray-200 hover:bg-gray-100">
+                            <td class="py-3 px-6 text-left whitespace-nowrap">
+                                <span class="font-medium">@lop.ClassName</span>
+                            </td>
+                            <td class="py-3 px-6 text-left">
+                                @lop.Course.Title
+                            </td>
+                            <td class="py-3 px-6 text-left">
+                                @lop.Schedule
+                            </td>
+                            <td class="py-3 px-6 text-left">
+                                @lop.StartDate.ToString("dd/MM/yyyy")
+                            </td>
+                            <td class="py-3 px-6 text-center">
+                                <a asp-action="ClassDetails" asp-route-id="@lop.Id" class="font-medium text-brand-blue hover:text-blue-700">
+                                    Xem Danh sách Sinh viên
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
