@@ -1,0 +1,48 @@
+﻿@model TrungTamAnhNgu.Web.Models.Enrollment
+@{
+    ViewData["Title"] = "Xác nhận Thanh toán";
+}
+
+<div class="bg-white py-24">
+    <div class="container mx-auto px-6">
+        <div class="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-xl">
+            <h1 class="text-3xl font-bold text-center text-brand-blue mb-8">
+                Xác nhận Thanh toán
+            </h1>
+
+            <div class="border-b pb-4 mb-4">
+                <h2 class="text-xl font-semibold text-gray-800">Thông tin Khóa học</h2>
+                <p class="text-gray-600">@Model.Class.Course.Title</p>
+            </div>
+
+            <div class="border-b pb-4 mb-4">
+                <h2 class="text-xl font-semibold text-gray-800">Thông tin Lớp học</h2>
+                <p class="text-gray-600">Lớp: @Model.Class.ClassName</p>
+                <p class="text-gray-600">Lịch học: @Model.Class.Schedule</p>
+                <p class="text-gray-600">Ngày khai giảng: @Model.Class.StartDate.ToString("dd/MM/yyyy")</p>
+            </div>
+
+            <div class="border-b pb-4 mb-4">
+                <h2 class="text-xl font-semibold text-gray-800">Học phí</h2>
+                <p class="text-3xl font-bold text-brand-blue">
+                    @Model.Class.Course.Price.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))
+                </p>
+            </div>
+
+            <form asp-action="ProcessPayment" method="post">
+                <input type="hidden" name="enrollmentId" value="@Model.Id" />
+                @Html.AntiForgeryToken()
+                <button type="submit"
+                        class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-lg font-medium text-brand-blue bg-brand-yellow hover:bg-yellow-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500">
+                    Xác nhận Thanh toán (Demo)
+                </button>
+            </form>
+
+            <div class="text-center mt-4">
+                <a asp-controller="Dashboard" asp-action="Index" class="text-sm text-gray-600 hover:underline">
+                    Quay lại Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

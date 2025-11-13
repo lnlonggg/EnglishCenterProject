@@ -15,10 +15,10 @@
                 <thead class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
                     <tr>
                         <th class="py-3 px-6 text-left">Khóa học / Lớp học</th>
-                        <th class="py-3 px-6 text-left">Lịch học</th>
                         <th class="py-3 px-6 text-left">Giáo viên</th>
                         <th class="py-3 px-6 text-left">Ngày đăng ký</th>
                         <th class="py-3 px-6 text-center">Trạng thái</th>
+                        <th class="py-3 px-6 text-center">Hành động</th>
                     </tr>
                 </thead>
                 <tbody class="text-gray-600 text-sm font-light">
@@ -30,16 +30,32 @@
                                 <span class="block text-xs text-gray-500">Lớp: @enrollment.Class.ClassName</span>
                             </td>
                             <td class="py-3 px-6 text-left">
-                                @enrollment.Class.Schedule
-                            </td>
-                            <td class="py-3 px-6 text-left">
                                 @enrollment.Class.Teacher.ApplicationUser.FullName
                             </td>
                             <td class="py-3 px-6 text-left">
                                 @enrollment.EnrollmentDate.ToString("dd/MM/yyyy")
                             </td>
                             <td class="py-3 px-6 text-center">
-                                <span class="bg-green-200 text-green-800 py-1 px-3 rounded-full text-xs">Đã ghi danh</span>
+                                @if (enrollment.Status == TrungTamAnhNgu.Web.Models.EnrollmentStatus.Paid)
+                                {
+                                    <span class="bg-green-200 text-green-800 py-1 px-3 rounded-full text-xs">Đã thanh toán</span>
+                                }
+                                else if (enrollment.Status == TrungTamAnhNgu.Web.Models.EnrollmentStatus.Pending)
+                                {
+                                    <span class="bg-yellow-200 text-yellow-800 py-1 px-3 rounded-full text-xs">Chờ thanh toán</span>
+                                }
+                                else
+                                {
+                                    <span class="bg-red-200 text-red-800 py-1 px-3 rounded-full text-xs">Đã hủy</span>
+                                }
+                            </td>
+                            <td class="py-3 px-6 text-center">
+                                @if (enrollment.Status == TrungTamAnhNgu.Web.Models.EnrollmentStatus.Pending)
+                                {
+                                    <a asp-controller="Payment" asp-action="Checkout" asp-route-enrollmentId="@enrollment.Id" class="font-medium text-brand-blue hover:text-blue-700">
+                                        Thanh toán ngay
+                                    </a>
+                                }
                             </td>
                         </tr>
                     }

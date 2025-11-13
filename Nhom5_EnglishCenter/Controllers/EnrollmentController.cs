@@ -48,26 +48,31 @@ namespace Nhom5_EnglishCenter.Controllers
             }
 
             var existingEnrollment = await _context.Enrollments
-                .AnyAsync(e => e.StudentId == studentProfile.Id && e.ClassId == classId);
+                .FirstOrDefaultAsync(e => e.StudentId == studentProfile.Id && e.ClassId == classId);
 
-            if (existingEnrollment)
+            if (existingEnrollment != null)
             {
-                TempData["ErrorMessage"] = "Bạn đã đăng ký lớp học này rồi.";
-                return RedirectToAction("Details", "Courses", new { id = classToEnroll.CourseId });
+                if (existingEnrollment.Status == EnrollmentStatus.Paid)
+                {
+                    TempData["ErrorMessage"] = "Bạn đã đăng ký và thanh toán lớp học này rồi.";
+                    return RedirectToAction("Details", "Courses", new { id = classToEnroll.CourseId });
+                }
+
+                return RedirectToAction("Checkout", "Payment", new { enrollmentId = existingEnrollment.Id });
             }
 
             var enrollment = new Enrollment
             {
                 StudentId = studentProfile.Id,
                 ClassId = classId,
-                EnrollmentDate = DateTime.Now
+                EnrollmentDate = DateTime.Now,
+                Status = EnrollmentStatus.Pending
             };
 
             _context.Enrollments.Add(enrollment);
             await _context.SaveChangesAsync();
 
-            TempData["SuccessMessage"] = $"Đăng ký lớp {classToEnroll.ClassName} thành công!";
-            return RedirectToAction("Details", "Courses", new { id = classToEnroll.CourseId });
+            return RedirectToAction("Checkout", "Payment", new { enrollmentId = enrollment.Id });
         }
     }
 }

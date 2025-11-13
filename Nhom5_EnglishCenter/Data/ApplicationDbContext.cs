@@ -67,6 +67,11 @@ namespace TrungTamAnhNgu.Web.Data
             builder.Entity<Class>()
                 .Property(c => c.Format)
                 .HasConversion<string>();
+
+            // Cấu hình cho kiểu dữ liệu Enum (EnrollmentStatus)
+            builder.Entity<Enrollment>()
+    .Property(e => e.Status)
+    .HasConversion<string>();
         }
     }
 }
