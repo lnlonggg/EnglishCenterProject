@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using TrungTamAnhNgu.Web.Models; 
+using TrungTamAnhNgu.Web.Models;
 using TrungTamAnhNgu.Web.Services;
+using System.Threading.Tasks;
 
-namespace TrungTamAnhNgu.Web.Controllers
+namespace Nhom5_EnglishCenter.Controllers
 {
     public class HomeController : Controller
     {
@@ -13,15 +14,25 @@ namespace TrungTamAnhNgu.Web.Controllers
         public HomeController(ILogger<HomeController> logger, ICourseService courseService)
         {
             _logger = logger;
-            _courseService = courseService; 
+            _courseService = courseService;
         }
-
 
         public async Task<IActionResult> Index()
         {
-            var featuredCourses = await _courseService.GetFeaturedCoursesAsync();
+            if (User.Identity.IsAuthenticated)
+            {
+                if (User.IsInRole("Admin"))
+                {
+                    return RedirectToAction("Index", "Courses", new { area = "Admin" });
+                }
 
-            // Truyền danh sách khóa học này cho View
+                if (User.IsInRole("Teacher"))
+                {
+                    return RedirectToAction("Index", "TeacherDashboard");
+                }
+            }
+
+            var featuredCourses = await _courseService.GetFeaturedCoursesAsync();
             return View(featuredCourses);
         }
 

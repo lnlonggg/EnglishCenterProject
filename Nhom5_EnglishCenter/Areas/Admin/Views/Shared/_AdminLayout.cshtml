@@ -56,10 +56,12 @@
             </nav>
 
             <div class="mt-auto">
-                <a asp-area="" asp-controller="Home" asp-action="Index"
-                   class="px-4 py-2 rounded-lg text-gray-400 hover:bg-gray-700 hover:text-white">
-                    &larr; Quay về Trang chủ
-                </a>
+                <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post">
+                    <button type="submit"
+                            class="w-full text-left px-4 py-2 rounded-lg text-gray-400 hover:bg-gray-700 hover:text-white transition duration-300">
+                        &larr; Đăng xuất
+                    </button>
+                </form>
             </div>
         </div>
 

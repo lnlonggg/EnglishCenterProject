@@ -1,0 +1,40 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using TrungTamAnhNgu.Web.Models
+@inject SignInManager<ApplicationUser> SignInManager
+
+@{
+    Layout = "/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mx-auto px-6 py-16">
+    <div class="flex flex-col md:flex-row gap-8">
+
+        <div class="w-full md:w-1/5">
+            <h2 class="text-2xl font-bold text-brand-blue mb-6">KHÓA HỌC</h2>
+            <nav class="flex flex-col space-y-2">
+
+                <a asp-controller="Courses" asp-action="Index"
+                   class="px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-200 hover:text-gray-900 transition duration-300">
+                    Tất cả Khóa học
+                </a>
+
+                @if (SignInManager.IsSignedIn(User) && User.IsInRole("Student"))
+                {
+                    <a asp-controller="Dashboard" asp-action="Index"
+                       class="px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-200 hover:text-gray-900 transition duration-300">
+                        Khóa học của tôi
+                    </a>
+                }
+
+            </nav>
+        </div>
+
+        <div class="w-full md:w-4/5">
+            @RenderBody()
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @await RenderSectionAsync("Scripts", required: false)
+}

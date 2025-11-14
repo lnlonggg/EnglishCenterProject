@@ -17,13 +17,6 @@
         </a>
     }
 
-    @if (User.IsInRole("Student"))
-    {
-        <a asp-area="" asp-controller="Dashboard" asp-action="Index" class="text-gray-600 hover:text-brand-blue font-medium">
-            Khóa học của tôi
-        </a>
-    }
-
     @if (User.IsInRole("Teacher"))
     {
         <a asp-area="" asp-controller="TeacherDashboard" asp-action="Index" class="text-gray-600 hover:text-brand-blue font-medium">
