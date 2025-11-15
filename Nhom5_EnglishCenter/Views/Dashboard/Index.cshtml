@@ -16,8 +16,8 @@
                     <tr>
                         <th class="py-3 px-6 text-left">Khóa học / Lớp học</th>
                         <th class="py-3 px-6 text-left">Giáo viên</th>
-                        <th class="py-3 px-6 text-left">Ngày đăng ký</th>
-                        <th class="py-3 px-6 text-center">Trạng thái</th>
+                        <th class="py-3 px-6 text-left">Trạng thái</th>
+                        <th class="py-3 px-6 text-center">Điểm cuối khóa</th>
                         <th class="py-3 px-6 text-center">Hành động</th>
                     </tr>
                 </thead>
@@ -33,9 +33,6 @@
                                 @enrollment.Class.Teacher.ApplicationUser.FullName
                             </td>
                             <td class="py-3 px-6 text-left">
-                                @enrollment.EnrollmentDate.ToString("dd/MM/yyyy")
-                            </td>
-                            <td class="py-3 px-6 text-center">
                                 @if (enrollment.Status == TrungTamAnhNgu.Web.Models.EnrollmentStatus.Paid)
                                 {
                                     <span class="bg-green-200 text-green-800 py-1 px-3 rounded-full text-xs">Đã thanh toán</span>
@@ -48,6 +45,9 @@
                                 {
                                     <span class="bg-red-200 text-red-800 py-1 px-3 rounded-full text-xs">Đã hủy</span>
                                 }
+                            </td>
+                            <td class="py-3 px-6 text-center font-medium text-gray-800">
+                                @(enrollment.FinalGrade.HasValue? enrollment.FinalGrade.Value.ToString("N1") : "Chưa có")
                             </td>
                             <td class="py-3 px-6 text-center">
                                 @if (enrollment.Status == TrungTamAnhNgu.Web.Models.EnrollmentStatus.Pending)

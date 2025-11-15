@@ -18,6 +18,8 @@
                         <th class="py-3 px-6 text-left">Tên Sinh viên</th>
                         <th class="py-3 px-6 text-left">Email</th>
                         <th class="py-3 px-6 text-left">Ngày đăng ký</th>
+                        <th class="py-3 px-6 text-center">Điểm (0-10)</th>
+                        <th class="py-3 px-6 text-center">Hành động</th>
                     </tr>
                 </thead>
                 <tbody class="text-gray-600 text-sm font-light">
@@ -33,6 +35,23 @@
                             <td class="py-3 px-6 text-left">
                                 @enrollment.EnrollmentDate.ToString("dd/MM/yyyy")
                             </td>
+
+                            <form asp-action="UpdateGrade" method="post">
+                                <input type="hidden" name="enrollmentId" value="@enrollment.Id" />
+                                @Html.AntiForgeryToken()
+                            <td class="py-3 px-6 text-center">
+                                <input type="number" name="finalGrade" value="@enrollment.FinalGrade"
+                                       step="0.1" min="0" max="10"
+                                       class="w-20 rounded-md border-gray-300 shadow-sm focus:border-brand-blue focus:ring-brand-blue sm:text-sm" />
+                            </td>
+                            <td class="py-3 px-6 text-center">
+                                <button type="submit"
+                                        class="px-4 py-1 bg-brand-blue text-white rounded-lg shadow hover:bg-blue-700 transition duration-300 text-xs font-medium">
+                                    Lưu điểm
+                                </button>
+                            </td>
+                            </form>
+
                         </tr>
                     }
                 </tbody>

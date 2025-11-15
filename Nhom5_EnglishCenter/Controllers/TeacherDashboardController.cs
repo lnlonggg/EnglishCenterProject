@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -73,6 +71,40 @@ namespace Nhom5_EnglishCenter.Controllers
             }
 
             return View(classDetails);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateGrade(int enrollmentId, decimal? finalGrade)
+        {
+            var teacherProfile = await GetCurrentTeacherProfile();
+            if (teacherProfile == null)
+            {
+                return Challenge();
+            }
+
+            var enrollment = await _context.Enrollments
+                .Include(e => e.Class)
+                .FirstOrDefaultAsync(e => e.Id == enrollmentId);
+
+            if (enrollment == null || enrollment.Class.TeacherId != teacherProfile.Id)
+            {
+                return NotFound("Không tìm thấy lượt ghi danh hoặc bạn không có quyền sửa.");
+            }
+
+            if (finalGrade.HasValue && (finalGrade < 0 || finalGrade > 10))
+            {
+                TempData["ErrorMessage"] = "Điểm số phải nằm trong khoảng từ 0 đến 10.";
+            }
+            else
+            {
+                enrollment.FinalGrade = finalGrade;
+                _context.Update(enrollment);
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Cập nhật điểm thành công.";
+            }
+
+            return RedirectToAction("ClassDetails", new { id = enrollment.ClassId });
         }
     }
 }
