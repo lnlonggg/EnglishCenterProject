@@ -1,0 +1,42 @@
+﻿@model TrungTamAnhNgu.Web.ViewModels.AdminDashboardStatsViewModel
+@{
+    ViewData["Title"] = "Dashboard Tổng quan";
+}
+
+<h1 class="text-3xl font-bold text-gray-800 mb-6">@ViewData["Title"]</h1>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <h3 class="text-lg font-medium text-gray-500">@Html.DisplayNameFor(model => model.TotalRevenue)</h3>
+        <p class="text-3xl font-bold text-brand-blue mt-2">
+            @Model.TotalRevenue.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))
+        </p>
+    </div>
+
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <h3 class="text-lg font-medium text-gray-500">@Html.DisplayNameFor(model => model.TotalStudents)</h3>
+        <p class="text-3xl font-bold text-gray-800 mt-2">@Model.TotalStudents</p>
+    </div>
+
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <h3 class="text-lg font-medium text-gray-500">@Html.DisplayNameFor(model => model.TotalTeachers)</h3>
+        <p class="text-3xl font-bold text-gray-800 mt-2">@Model.TotalTeachers</p>
+    </div>
+
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <h3 class="text-lg font-medium text-gray-500">@Html.DisplayNameFor(model => model.TotalCourses)</h3>
+        <p class="text-3xl font-bold text-gray-800 mt-2">@Model.TotalCourses</p>
+    </div>
+
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <h3 class="text-lg font-medium text-gray-500">@Html.DisplayNameFor(model => model.TotalClasses)</h3>
+        <p class="text-3xl font-bold text-gray-800 mt-2">@Model.TotalClasses</p>
+    </div>
+
+    <div class="bg-white p-6 rounded-lg shadow-md">
+        <h3 class="text-lg font-medium text-gray-500">@Html.DisplayNameFor(model => model.TotalEnrollments)</h3>
+        <p class="text-3xl font-bold text-gray-800 mt-2">@Model.TotalEnrollments</p>
+    </div>
+
+</div>

@@ -87,7 +87,7 @@ namespace Nhom5_EnglishCenter.Areas.Identity.Pages.Account
 
                         if (roles.Contains("Admin"))
                         {
-                            return RedirectToAction("Index", "Courses", new { area = "Admin" });
+                            return RedirectToAction("Index", "Home", new { area = "Admin" });
                         }
 
                         if (roles.Contains("Teacher"))
