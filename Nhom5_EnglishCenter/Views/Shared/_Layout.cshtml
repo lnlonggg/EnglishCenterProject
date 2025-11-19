@@ -46,8 +46,12 @@
 
                 <a asp-area="" asp-controller="Courses" asp-action="Index" class="text-gray-600 hover:text-brand-blue font-medium">Khóa học</a>
 
-                @* <a href="#" class="text-gray-600 hover:text-brand-blue font-medium">Giới thiệu</a>
-                   <a href="#" class="text-gray-600 hover:text-brand-blue font-medium">Liên hệ</a> *@
+                <a asp-controller="Home" asp-action="Contact" class="text-gray-600 hover:text-brand-blue font-medium">Liên hệ</a>
+
+                <a asp-controller="Home" asp-action="Contact" asp-route-subject="Tư vấn lộ trình"
+                   class="bg-brand-yellow text-brand-blue px-5 py-2 rounded-full font-bold shadow-md hover:bg-yellow-400 transition duration-300">
+                    Đăng ký ngay
+                </a>
 
                 <partial name="_LoginPartial" />
             </div>
