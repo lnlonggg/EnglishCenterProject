@@ -19,6 +19,8 @@ namespace TrungTamAnhNgu.Web.Data
         public DbSet<Class> Classes { get; set; }
         public DbSet<Enrollment> Enrollments { get; set; }
 
+        public DbSet<Contact> Contacts { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

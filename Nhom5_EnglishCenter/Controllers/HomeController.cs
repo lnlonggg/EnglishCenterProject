@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using TrungTamAnhNgu.Web.Data;
 using TrungTamAnhNgu.Web.Models;
 using TrungTamAnhNgu.Web.Services;
 using TrungTamAnhNgu.Web.ViewModels;
@@ -11,11 +12,13 @@ namespace Nhom5_EnglishCenter.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly ICourseService _courseService;
+        private readonly ApplicationDbContext _context;
 
-        public HomeController(ILogger<HomeController> logger, ICourseService courseService)
+        public HomeController(ILogger<HomeController> logger, ICourseService courseService, ApplicationDbContext context)
         {
             _logger = logger;
             _courseService = courseService;
+            _context = context;
         }
 
         public async Task<IActionResult> Index()
@@ -57,13 +60,28 @@ namespace Nhom5_EnglishCenter.Controllers
         // POST: /Home/Contact
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Contact(ContactViewModel model)
+        public async Task<IActionResult> Contact(ContactViewModel model)
         {
             if (ModelState.IsValid)
             {
-                // Tạm thời chỉ hiện thông báo thành công
+                // 1. Chuyển đổi từ ViewModel sang Model thực thể
+                var contactEntity = new Contact
+                {
+                    FullName = model.FullName,
+                    Email = model.Email,
+                    PhoneNumber = model.PhoneNumber,
+                    Subject = model.Subject,
+                    Message = model.Message,
+                    CreatedDate = DateTime.Now,
+                    IsRead = false
+                };
 
-                TempData["SuccessMessage"] = "Cảm ơn bạn đã liên hệ! Chúng tôi sẽ gọi lại cho bạn sớm nhất.";
+                // 2. Lưu vào Database
+                _context.Contacts.Add(contactEntity);
+                await _context.SaveChangesAsync();
+
+                // 3. Thông báo thành công
+                TempData["SuccessMessage"] = "Cảm ơn bạn đã liên hệ! Yêu cầu của bạn đã được gửi đến bộ phận tư vấn.";
                 return RedirectToAction("Index");
             }
 
