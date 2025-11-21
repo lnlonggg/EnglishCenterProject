@@ -4,32 +4,85 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
-@if (SignInManager.IsSignedIn(User))
-{
-    <a asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage" class="text-gray-600 hover:text-brand-blue font-medium">
-        Chào, @User.Identity.Name!
-    </a>
+<div class="relative group">
 
-    @if (User.IsInRole("Admin"))
-    {
-        <a asp-area="Admin" asp-controller="Courses" asp-action="Index" class="text-gray-600 hover:text-brand-blue font-medium">
-            Trang Quản lý
-        </a>
-    }
+    <button class="flex items-center space-x-2 bg-gray-100 text-brand-blue px-4 py-2 rounded-full font-medium hover:bg-gray-200 transition focus:outline-none">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+        </svg>
+        <span>
+            @if (SignInManager.IsSignedIn(User))
+            {
+                @* Nếu đã đăng nhập thì hiện tên *@
+                @("Tài khoản")
+            }
+            else
+            {
+                @("Tài khoản")
+            }
+        </span>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+        </svg>
+    </button>
 
-    @if (User.IsInRole("Teacher"))
-    {
-        <a asp-area="" asp-controller="TeacherDashboard" asp-action="Index" class="text-gray-600 hover:text-brand-blue font-medium">
-            Lịch dạy của tôi
-        </a>
-    }
+    <div class="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top-right z-50">
+        <div class="py-2">
 
-    <form class="inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-        <button type="submit" class="text-gray-600 hover:text-brand-blue font-medium">Đăng xuất</button>
-    </form>
-}
-else
-{
-    <a class="text-gray-600 hover:text-brand-blue font-medium" asp-area="Identity" asp-page="/Account/Register">Đăng ký</a>
-    <a class="bg-brand-yellow text-brand-blue px-5 py-2 rounded-full font-bold shadow-md hover:bg-yellow-400 transition duration-300" asp-area="Identity" asp-page="/Account/Login">Đăng nhập</a>
-}
+            @if (SignInManager.IsSignedIn(User))
+            {
+                // --- TRƯỜNG HỢP ĐÃ ĐĂNG NHẬP ---
+
+                <div class="px-4 py-2 border-b border-gray-100">
+                    <p class="text-sm text-gray-500">Xin chào,</p>
+                    <p class="text-sm font-bold text-brand-blue truncate">@User.Identity.Name</p>
+                </div>
+
+                <a asp-area="Identity" asp-page="/Account/Manage/Index" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-brand-blue">
+                    Hồ sơ cá nhân
+                </a>
+
+                @if (User.IsInRole("Admin"))
+                {
+                    <a asp-area="Admin" asp-controller="Courses" asp-action="Index" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-brand-blue">
+                        Dashboard Quản trị
+                    </a>
+                }
+
+                @if (User.IsInRole("Teacher"))
+                {
+                    <a asp-area="" asp-controller="TeacherDashboard" asp-action="Index" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-brand-blue">
+                        Lịch dạy của tôi
+                    </a>
+                }
+
+                @if (User.IsInRole("Student"))
+                {
+                    <a asp-area="" asp-controller="Dashboard" asp-action="Index" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-brand-blue">
+                        Khóa học của tôi
+                    </a>
+                }
+
+                <div class="border-t border-gray-100 mt-1"></div>
+
+                <form class="w-full" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                    <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+                        Đăng xuất
+                    </button>
+                </form>
+            }
+            else
+            {
+                // --- TRƯỜNG HỢP CHƯA ĐĂNG NHẬP (KHÁCH) ---
+
+                <a asp-area="Identity" asp-page="/Account/Login" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-brand-blue">
+                    Đăng nhập
+                </a>
+                <a asp-area="Identity" asp-page="/Account/Register" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-brand-blue">
+                    Đăng ký tài khoản
+                </a>
+            }
+
+        </div>
+    </div>
+</div>
