@@ -43,6 +43,13 @@ namespace Nhom5_EnglishCenter.Areas.Admin.Controllers
                 return NotFound();
             }
 
+            if (!contact.IsRead)
+            {
+                contact.IsRead = true;
+                _context.Update(contact);
+                await _context.SaveChangesAsync();
+            }
+
             return View(contact);
         }
 

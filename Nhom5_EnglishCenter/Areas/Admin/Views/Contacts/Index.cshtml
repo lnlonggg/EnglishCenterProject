@@ -1,71 +1,69 @@
 ﻿@model IEnumerable<TrungTamAnhNgu.Web.Models.Contact>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Hộp thư Liên hệ";
 }
 
-<h1>Index</h1>
+<div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold text-gray-800">@ViewData["Title"]</h1>
+    <span class="text-sm text-gray-500 italic">* Click đúp vào tin nhắn để xem chi tiết</span>
+</div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.FullName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PhoneNumber)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Subject)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Message)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreatedDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsRead)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.FullName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PhoneNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Subject)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Message)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsRead)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+<div class="bg-white shadow-md rounded-lg overflow-hidden">
+    <table class="min-w-full bg-white text-sm">
+        <thead class="bg-gray-100 text-gray-600 uppercase text-xs leading-normal">
+            <tr>
+                <th class="py-3 px-6 text-left w-1/4">Người gửi</th>
+                <th class="py-3 px-6 text-left w-1/2">Tiêu đề & Nội dung</th>
+                <th class="py-3 px-6 text-right w-1/6">Thời gian</th>
+                <th class="py-3 px-6 text-center w-1/12">Hành động</th>
+            </tr>
+        </thead>
+        <tbody class="text-gray-600 font-light">
+            @foreach (var item in Model)
+            {
+                var rowClass = item.IsRead ? "bg-gray-50 text-gray-600" : "bg-white text-gray-900 font-bold";
+                var iconStatus = item.IsRead ? "text-gray-400" : "text-blue-600";
+
+                <tr class="border-b border-gray-200 hover:bg-blue-50 cursor-pointer transition duration-150 @rowClass"
+                    onclick="window.location.href='@Url.Action("Details", new { id = item.Id })'">
+
+                    <td class="py-4 px-6 text-left whitespace-nowrap">
+                        <div class="flex items-center">
+                            <div class="mr-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 @iconStatus" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                                    <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <span class="font-medium">@item.FullName</span>
+                                <div class="text-xs font-normal text-gray-500">@item.Email</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="py-4 px-6 text-left">
+                        <span class="@(item.IsRead ? "font-medium" : "font-bold")">@item.Subject</span>
+                        <span class="text-gray-400 mx-2">-</span>
+                        <span class="text-gray-500 font-normal truncate">
+                            @(item.Message?.Length > 50 ? item.Message.Substring(0, 50) + "..." : item.Message)
+                        </span>
+                    </td>
+
+                    <td class="py-4 px-6 text-right">
+                        <span>@item.CreatedDate.ToString("dd/MM HH:mm")</span>
+                    </td>
+                    <td class="py-4 px-6 text-center">
+                        <a asp-action="Delete" asp-route-id="@item.Id"
+                           class="text-gray-400 hover:text-red-600 transform hover:scale-110 transition duration-150"
+                           onclick="event.stopPropagation();">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-2.111-1.973L4.965 7M9 7h6m0 0a2 2 0 01-2-2v-1a1 1 0 00-1-1 1 1 0 00-1 1v1a2 2 0 01-2 2h6z" />
+                            </svg>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
