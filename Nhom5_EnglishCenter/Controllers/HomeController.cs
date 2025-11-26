@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Nhom5_EnglishCenter.Models;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using TrungTamAnhNgu.Web.Data;
@@ -40,10 +41,41 @@ namespace Nhom5_EnglishCenter.Controllers
             return View(featuredCourses);
         }
 
+        // GET: /Home/Error/{statusCode}
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        public IActionResult Error(int? id) // id statusCode (404, 403, 500)
         {
-            return View(new { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            var errorModel = new ErrorViewModel
+            {
+                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
+            };
+
+            if (id.HasValue)
+            {
+                if (id == 404)
+                {
+                    ViewBag.ErrorMessage = "Xin lỗi, trang bạn tìm kiếm không tồn tại.";
+                    ViewBag.ErrorTitle = "404 - Không tìm thấy";
+                }
+                else if (id == 403)
+                {
+                    ViewBag.ErrorMessage = "Bạn không có quyền truy cập vào trang này.";
+                    ViewBag.ErrorTitle = "403 - Từ chối truy cập";
+                }
+                else
+                {
+                    ViewBag.ErrorMessage = "Đã xảy ra lỗi không mong muốn. Vui lòng thử lại sau.";
+                    ViewBag.ErrorTitle = "Lỗi Hệ Thống";
+                }
+            }
+            else
+            {
+                // Lỗi 500 hoặc Exception
+                ViewBag.ErrorMessage = "Hệ thống đang gặp sự cố. Chúng tôi đang khắc phục.";
+                ViewBag.ErrorTitle = "Đã xảy ra lỗi";
+            }
+
+            return View("Error");
         }
 
         // GET: /Home/Contact

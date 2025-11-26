@@ -25,7 +25,7 @@ namespace TrungTamAnhNgu.Web.Data.Seed
             // 4. Lớp học (Đủ số lượng)
             await SeedClassesAsync(context);
 
-            // 5. Học viên (Đủ 100 người) - FIX LỖI TẠI ĐÂY
+            // 5. Học viên (Đủ 100 người)
             await SeedStudentsAsync(userManager, context);
         }
 
@@ -127,13 +127,11 @@ namespace TrungTamAnhNgu.Web.Data.Seed
             var classes = await context.Classes.Include(c => c.Course).ToListAsync();
             var random = new Random();
 
-            // Chỉ chạy nếu chưa đủ 100 học viên
             if (currentStudents < 100 && classes.Any())
             {
-                // ĐỔI "student" THÀNH "hv" ĐỂ TRÁNH TRÙNG USER CŨ
                 for (int i = currentStudents + 1; i <= 100; i++)
                 {
-                    string email = $"hv{i}@email.com"; // <<--- ĐỔI EMAIL MỚI
+                    string email = $"hv{i}@email.com";
 
                     // Kiểm tra kỹ nếu user đã tồn tại thì bỏ qua
                     if (await userManager.FindByEmailAsync(email) == null)

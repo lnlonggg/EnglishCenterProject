@@ -18,6 +18,11 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.S
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders()
     .AddDefaultUI();
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Identity/Account/Login";
+    options.AccessDeniedPath = "/Home/Error/403";
+});
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
@@ -30,6 +35,8 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
+
+app.UseStatusCodePagesWithReExecute("/Home/Error/{0}");
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

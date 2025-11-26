@@ -15,10 +15,19 @@ namespace Nhom5_EnglishCenter.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        // GET: /Courses?searchString=...
+        public async Task<IActionResult> Index(string searchString)
         {
-            var allCourses = await _courseService.GetAllCoursesAsync();
-            return View(allCourses);
+            var courses = await _courseService.GetAllCoursesAsync();
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                searchString = searchString.ToLower();
+
+                courses = courses.Where(c =>
+                    c.Title.ToLower().Contains(searchString) ||
+                    c.Description.ToLower().Contains(searchString));
+            }
+            return View(courses);
         }
 
         // GET: /Courses/Details/5
