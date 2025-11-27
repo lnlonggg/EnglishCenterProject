@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using TrungTamAnhNgu.Web.Models;
 
@@ -18,7 +18,6 @@ namespace TrungTamAnhNgu.Web.Data
         public DbSet<Course> Courses { get; set; }
         public DbSet<Class> Classes { get; set; }
         public DbSet<Enrollment> Enrollments { get; set; }
-
         public DbSet<Contact> Contacts { get; set; }
 
 

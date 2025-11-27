@@ -21,12 +21,12 @@ namespace TrungTamAnhNgu.Web.Models
 
         [Required]
         [StringLength(200)]
-        public string Subject { get; set; } // Nhu cầu (Tư vấn, Kiểm tra...)
+        public string Subject { get; set; }
 
-        public string? Message { get; set; } // Lời nhắn thêm
+        public string? Message { get; set; }
 
         public DateTime CreatedDate { get; set; } = DateTime.Now;
 
-        public bool IsRead { get; set; } = false; // Trạng thái: Admin đã đọc chưa?
+        public bool IsRead { get; set; } = false;
     }
 }

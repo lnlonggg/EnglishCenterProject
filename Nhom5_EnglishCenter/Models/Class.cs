@@ -18,7 +18,6 @@ namespace TrungTamAnhNgu.Web.Models
         public string Schedule { get; set; }
 
         public int MaxStudents { get; set; }
-
  
         public ClassFormat Format { get; set; } 
         public string? Location { get; set; } 
