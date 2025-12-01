@@ -30,49 +30,53 @@
 
                 <h2 class="text-2xl font-bold text-gray-800 mb-6">Các lớp học sắp khai giảng</h2>
 
-                <div class="overflow-x-auto shadow-md rounded-lg">
-                    <table class="min-w-full bg-white">
-                        <thead class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                <div class="overflow-x-auto shadow-md rounded-lg border border-gray-200">
+                    <table class="min-w-full bg-white table-auto">
+                        <thead class="bg-gray-100 text-gray-600 uppercase text-xs font-semibold leading-normal">
                             <tr>
-                                <th class="py-3 px-6 text-left">Tên lớp</th>
-                                <th class="py-3 px-6 text-left">Lịch học</th>
-                                <th class="py-3 px-6 text-left">Hình thức</th>
-                                <th class="py-3 px-6 text-left">Giáo viên</th>
-                                <th class="py-3 px-6 text-center">Đăng ký</th>
+                                <th class="py-3 px-4 text-left w-1/4">Tên lớp</th>
+                                <th class="py-3 px-4 text-left w-1/5">Lịch học</th>
+                                <th class="py-3 px-4 text-center w-1/6">Hình thức</th>
+                                <th class="py-3 px-4 text-left w-1/5">Giáo viên</th>
+                                <th class="py-3 px-4 text-center w-1/6">Đăng ký</th>
                             </tr>
                         </thead>
                         <tbody class="text-gray-600 text-sm font-light">
                             @foreach (var lop in Model.Classes.OrderBy(c => c.StartDate))
                             {
-                                <tr class="border-b border-gray-200 hover:bg-gray-100">
-                                    <td class="py-3 px-6 text-left whitespace-nowrap">
-                                        <span class="font-medium">@lop.ClassName</span>
-                                        <span class="block text-xs text-gray-500">Khai giảng: @lop.StartDate.ToString("dd/MM/yyyy")</span>
+                                <tr class="border-b border-gray-200 hover:bg-gray-50 transition duration-150">
+                                    <td class="py-4 px-4 text-left align-top">
+                                        <div class="font-bold text-gray-800">@lop.ClassName</div>
+                                        <div class="text-xs text-gray-500 mt-1">
+                                            Khai giảng: <span class="font-medium">@lop.StartDate.ToString("dd/MM/yyyy")</span>
+                                        </div>
                                     </td>
-                                    <td class="py-3 px-6 text-left">
-                                        @lop.Schedule
+                                    <td class="py-4 px-4 text-left align-top">
+                                        <div class="whitespace-pre-line">@lop.Schedule</div>
                                     </td>
-                                    <td class="py-3 px-6 text-left">
+                                    <td class="py-4 px-4 text-center align-top">
                                         @if (lop.Format == TrungTamAnhNgu.Web.Models.ClassFormat.Offline)
                                         {
-                                            <span class="bg-blue-200 text-blue-800 py-1 px-3 rounded-full text-xs">Offline</span>
-                                            <span class="block text-xs text-gray-500">@lop.Location</span>
+                                            <span class="bg-blue-100 text-blue-800 py-1 px-3 rounded-full text-xs font-semibold">Offline</span>
+                                            <div class="text-xs text-gray-500 mt-1 truncate max-w-[150px]" title="@lop.Location">
+                                                @lop.Location
+                                            </div>
                                         }
                                         else
                                         {
-                                            <span class="bg-green-200 text-green-800 py-1 px-3 rounded-full text-xs">Online</span>
+                                            <span class="bg-green-100 text-green-800 py-1 px-3 rounded-full text-xs font-semibold">Online</span>
                                         }
                                     </td>
-                                    <td class="py-3 px-6 text-left">
-                                        @lop.Teacher.ApplicationUser.FullName
+                                    <td class="py-4 px-4 text-left align-top">
+                                        <div class="font-medium">@lop.Teacher.ApplicationUser.FullName</div>
                                     </td>
-                                    <td class="py-3 px-6 text-center">
+                                    <td class="py-4 px-4 text-center align-top">
                                         @if (SignInManager.IsSignedIn(User))
                                         {
                                             <form asp-controller="Enrollment" asp-action="Enroll" method="post">
                                                 <input type="hidden" name="classId" value="@lop.Id" />
                                                 <button type="submit"
-                                                        class="bg-brand-yellow text-brand-blue px-4 py-2 rounded-full font-bold shadow-md hover:bg-yellow-400 transition duration-300 text-xs">
+                                                        class="bg-brand-yellow text-brand-blue px-4 py-2 rounded-lg font-bold shadow-sm hover:bg-yellow-400 hover:shadow-md transition duration-300 text-xs w-full">
                                                     Đăng ký ngay
                                                 </button>
                                             </form>
@@ -80,10 +84,10 @@
                                         else
                                         {
                                             <a asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@Url.Action("Details", "Courses", new { id = Model.Id })"
-                                               class="bg-gray-300 text-gray-700 px-4 py-2 rounded-full font-bold shadow-md hover:bg-gray-400 transition duration-300 text-xs">
-                                                Đăng nhập để đăng ký
+                                               class="inline-block bg-gray-200 text-gray-600 px-4 py-2 rounded-lg font-medium hover:bg-gray-300 transition duration-300 text-xs w-full text-center">
+                                                Đăng nhập để ĐK
                                             </a>
-                                        }   
+                                        }
                                     </td>
                                 </tr>
                             }
