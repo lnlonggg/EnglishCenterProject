@@ -1,0 +1,93 @@
+﻿@model TrungTamAnhNgu.Web.ViewModels.TimetableViewModel
+
+@* --- ĐIỀU HƯỚNG TUẦN --- *@
+<div class="flex justify-between items-center mb-6 bg-gray-50 p-4 rounded-lg border border-gray-200">
+    @* Nút Tuần Trước *@
+    <a href="?date=@Model.StartOfWeek.AddDays(-7).ToString("yyyy-MM-dd")"
+       class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 shadow-sm font-medium">
+        &larr; Tuần trước
+    </a>
+
+    <div class="text-center">
+        <h3 class="text-lg font-bold text-brand-blue">
+            Tuần từ @Model.StartOfWeek.ToString("dd/MM") đến @Model.EndOfWeek.ToString("dd/MM/yyyy")
+        </h3>
+        @if (Model.StartOfWeek <= DateTime.Today && Model.EndOfWeek >= DateTime.Today)
+        {
+            <span class="text-xs font-semibold bg-green-100 text-green-800 px-2 py-1 rounded-full">Tuần hiện tại</span>
+        }
+    </div>
+
+    @* Nút Tuần Sau *@
+    <a href="?date=@Model.StartOfWeek.AddDays(7).ToString("yyyy-MM-dd")"
+       class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100 shadow-sm font-medium">
+        Tuần sau &rarr;
+    </a>
+</div>
+
+<div class="overflow-x-auto shadow-lg rounded-lg border border-gray-200 bg-white">
+    <table class="min-w-full table-fixed border-collapse">
+        <thead>
+            <tr class="bg-brand-blue text-white text-sm uppercase leading-normal">
+                <th class="py-3 px-2 w-24 border-r border-blue-400 text-center bg-blue-900">Ca / Thứ</th>
+                @* HIỂN THỊ NGÀY THỰC TẾ LÊN HEADER *@
+                @for (int i = 0; i < 7; i++)
+                {
+                    var dayDate = Model.StartOfWeek.AddDays(i);
+                    var isToday = dayDate.Date == DateTime.Today;
+                    // Nếu là hôm nay thì đổi màu nền header cho nổi bật
+                    <th class="py-3 px-2 border-r border-blue-400 text-center @(isToday ? "bg-brand-yellow text-brand-blue font-bold" : "")">
+                        @dayDate.ToString("dd/MM") <br />
+                        <span class="text-xs opacity-75">@(i == 6 ? "CN" : "Thứ " + (i + 2))</span>
+                    </th>
+                }
+            </tr>
+        </thead>
+        <tbody class="text-gray-600 text-xs font-light">
+            @{
+                string[] shifts = { "Ca 1\n(08h-10h)", "Ca 2\n(10h-12h)", "Ca 3\n(13h30-15h30)", "Ca 4\n(17h30-19h30)" };
+            }
+
+            @for (int ca = 0; ca < 4; ca++)
+            {
+                <tr class="border-b border-gray-200 hover:bg-gray-50 h-28">
+                    <td class="py-3 px-2 text-center font-bold bg-gray-100 border-r border-gray-200 whitespace-pre-line">
+                        @shifts[ca]
+                    </td>
+
+                    @for (int thu = 0; thu < 7; thu++)
+                    {
+                        // Kiểm tra nếu ngày này là quá khứ thì làm mờ đi
+                        var currentCellDate = Model.StartOfWeek.AddDays(thu);
+                        var isPast = currentCellDate < DateTime.Today;
+
+                        <td class="py-2 px-1 border-r border-gray-200 align-top @(isPast ? "bg-gray-50 opacity-70" : "")">
+                            @if (Model.Grid[ca, thu].Any())
+                            {
+                                @foreach (var session in Model.Grid[ca, thu])
+                                {
+                                    <div class="mb-1 p-2 rounded border-l-4 shadow-sm hover:shadow-md transition bg-blue-100 border-brand-blue cursor-pointer"
+                                         title="Bấm để xem chi tiết"
+                                         onclick="alert('Lớp: @session.ClassInfo.ClassName\nPhòng: @session.ClassInfo.Location')">
+
+                                        <div class="font-bold text-brand-blue truncate">
+                                            @session.ClassInfo.ClassName
+                                        </div>
+                                        <div class="text-gray-600 truncate text-[10px]">
+                                            @session.ClassInfo.Course?.Title
+                                        </div>
+                                        <div class="mt-1 flex items-center text-gray-500 font-medium">
+                                            <span class="truncate">
+                                                📍 @(session.ClassInfo.Format == TrungTamAnhNgu.Web.Models.ClassFormat.Offline ? session.ClassInfo.Location : "Online")
+                                            </span>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

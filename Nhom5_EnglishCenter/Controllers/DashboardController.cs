@@ -1,10 +1,11 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Threading.Tasks;
 using TrungTamAnhNgu.Web.Data;
+using TrungTamAnhNgu.Web.Helpers;
 using TrungTamAnhNgu.Web.Models;
 
 namespace Nhom5_EnglishCenter.Controllers
@@ -49,6 +50,31 @@ namespace Nhom5_EnglishCenter.Controllers
                 .ToListAsync();
 
             return View(myEnrollments);
+        }
+
+        // GET: /Dashboard/Timetable?date=...
+        public async Task<IActionResult> Timetable(DateTime? date)
+        {
+            var userId = _userManager.GetUserId(User);
+            var student = await _context.Students.FirstOrDefaultAsync(s => s.ApplicationUserId == userId);
+            if (student == null) return Challenge();
+
+            // Mặc định là hôm nay nếu không chọn ngày
+            DateTime targetDate = date ?? DateTime.Today;
+
+            var myEnrollments = await _context.Enrollments
+                .Include(e => e.Class.Course)
+                .Include(e => e.Class.Teacher.ApplicationUser)
+                .Where(e => e.StudentId == student.Id &&
+                            (e.Status == EnrollmentStatus.Paid || e.Status == EnrollmentStatus.Pending))
+                .ToListAsync();
+
+            var myClasses = myEnrollments.Select(e => e.Class).ToList();
+
+            // Gọi Helper mới
+            var model = ScheduleHelper.ParseForWeek(myClasses, targetDate);
+
+            return View(model);
         }
     }
 }

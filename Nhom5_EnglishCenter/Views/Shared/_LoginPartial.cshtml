@@ -51,8 +51,12 @@
 
                 @if (User.IsInRole("Teacher"))
                 {
-                    <a asp-area="" asp-controller="TeacherDashboard" asp-action="Index" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-brand-blue">
-                        Lịch dạy của tôi
+                    <a asp-area="" asp-controller="TeacherDashboard" asp-action="Index" class="text-gray-600 hover:text-brand-blue font-medium block px-4 py-2">
+                        Danh sách lớp dạy
+                    </a>
+
+                    <a asp-area="" asp-controller="TeacherDashboard" asp-action="Timetable" class="text-gray-600 hover:text-brand-blue font-medium block px-4 py-2">
+                        Xem Thời khóa biểu
                     </a>
                 }
 

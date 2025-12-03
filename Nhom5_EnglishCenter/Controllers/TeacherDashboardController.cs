@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TrungTamAnhNgu.Web.Data;
+using TrungTamAnhNgu.Web.Helpers;
 using TrungTamAnhNgu.Web.Models;
 
 namespace Nhom5_EnglishCenter.Controllers
@@ -105,6 +106,23 @@ namespace Nhom5_EnglishCenter.Controllers
             }
 
             return RedirectToAction("ClassDetails", new { id = enrollment.ClassId });
+        }
+
+        public async Task<IActionResult> Timetable(DateTime? date)
+        {
+            var teacher = await GetCurrentTeacherProfile();
+            if (teacher == null) return Challenge();
+
+            DateTime targetDate = date ?? DateTime.Today;
+
+            var myClasses = await _context.Classes
+                .Include(c => c.Course)
+                .Where(c => c.TeacherId == teacher.Id)
+                .ToListAsync();
+
+            var model = ScheduleHelper.ParseForWeek(myClasses, targetDate);
+
+            return View(model);
         }
     }
 }

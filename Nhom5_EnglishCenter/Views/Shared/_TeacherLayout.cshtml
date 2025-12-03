@@ -1,0 +1,37 @@
+﻿@{
+    Layout = "/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mx-auto px-6 py-16">
+    <div class="flex flex-col md:flex-row gap-8">
+
+        @* --- SIDEBAR (MENU BÊN TRÁI) --- *@
+        <div class="w-full md:w-1/5">
+            <h2 class="text-2xl font-bold text-brand-blue mb-6">GIẢNG VIÊN</h2>
+            <nav class="flex flex-col space-y-2">
+
+                <a asp-controller="TeacherDashboard" asp-action="Index"
+                   class="px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-200 hover:text-gray-900 transition duration-300 flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16" /></svg>
+                    Danh sách Lớp dạy
+                </a>
+
+                <a asp-controller="TeacherDashboard" asp-action="Timetable"
+                   class="px-4 py-2 rounded-lg text-gray-700 hover:bg-gray-200 hover:text-gray-900 transition duration-300 flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+                    Thời khóa biểu
+                </a>
+
+            </nav>
+        </div>
+
+        @* --- NỘI DUNG CHÍNH --- *@
+        <div class="w-full md:w-4/5">
+            @RenderBody()
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @await RenderSectionAsync("Scripts", required: false)
+}
