@@ -54,39 +54,59 @@
                                     <td class="py-4 px-4 text-left align-top">
                                         <div class="whitespace-pre-line">@lop.Schedule</div>
                                     </td>
+
                                     <td class="py-4 px-4 text-center align-top">
-                                        @if (lop.Format == TrungTamAnhNgu.Web.Models.ClassFormat.Offline)
+                                        @* LOGIC HIỂN THỊ NÚT ĐĂNG KÝ DỰA TRÊN TRẠNG THÁI *@
+
+                                        @if (lop.Status == TrungTamAnhNgu.Web.Models.ClassStatus.Open)
                                         {
-                                            <span class="bg-blue-100 text-blue-800 py-1 px-3 rounded-full text-xs font-semibold">Offline</span>
-                                            <div class="text-xs text-gray-500 mt-1 truncate max-w-[150px]" title="@lop.Location">
-                                                @lop.Location
-                                            </div>
+                                            // TRƯỜNG HỢP 1: ĐANG TUYỂN SINH (Hiện nút Đăng ký)
+                                            if (SignInManager.IsSignedIn(User))
+                                            {
+                                                if (User.IsInRole("Student"))
+                                                {
+                                                    <form asp-controller="Enrollment" asp-action="Enroll" method="post" class="w-full">
+                                                        <input type="hidden" name="classId" value="@lop.Id" />
+                                                        <button type="submit" class="bg-brand-yellow text-brand-blue px-3 py-2 rounded-lg font-bold shadow-sm hover:bg-yellow-400 text-xs w-full transition-colors duration-200">
+                                                            Đăng ký ngay
+                                                        </button>
+                                                    </form>
+                                                }
+                                                else
+                                                {
+                                                    <span class="inline-block bg-gray-100 text-gray-500 px-3 py-2 rounded-lg text-xs w-full text-center cursor-not-allowed border border-gray-200">
+                                                        Dành cho Học viên
+                                                    </span>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <a asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@Url.Action("Details", "Courses", new { id = Model.Id })"
+                                                   class="inline-block bg-gray-200 text-gray-700 px-3 py-2 rounded-lg font-medium hover:bg-gray-300 hover:text-gray-900 transition-colors duration-200 text-xs w-full text-center border border-gray-300">
+                                                    Đăng nhập để ĐK
+                                                </a>
+                                            }
+                                        }
+                                        else if (lop.Status == TrungTamAnhNgu.Web.Models.ClassStatus.Planned)
+                                        {
+                                            // TRƯỜNG HỢP 2: DỰ KIẾN (Sắp mở)
+                                            <span class="inline-block bg-blue-50 text-blue-600 px-3 py-2 rounded-lg text-xs w-full text-center font-medium border border-blue-100">
+                                                Sắp mở
+                                            </span>
+                                        }
+                                        else if (lop.Status == TrungTamAnhNgu.Web.Models.ClassStatus.Active)
+                                        {
+                                            // TRƯỜNG HỢP 3: ĐANG HỌC (Khóa sổ)
+                                            <span class="inline-block bg-green-50 text-green-600 px-3 py-2 rounded-lg text-xs w-full text-center font-medium border border-green-100">
+                                                Đang học
+                                            </span>
                                         }
                                         else
                                         {
-                                            <span class="bg-green-100 text-green-800 py-1 px-3 rounded-full text-xs font-semibold">Online</span>
-                                        }
-                                    </td>
-                                    <td class="py-4 px-4 text-left align-top">
-                                        <div class="font-medium">@lop.Teacher.ApplicationUser.FullName</div>
-                                    </td>
-                                    <td class="py-4 px-4 text-center align-top">
-                                        @if (SignInManager.IsSignedIn(User))
-                                        {
-                                            <form asp-controller="Enrollment" asp-action="Enroll" method="post">
-                                                <input type="hidden" name="classId" value="@lop.Id" />
-                                                <button type="submit"
-                                                        class="bg-brand-yellow text-brand-blue px-4 py-2 rounded-lg font-bold shadow-sm hover:bg-yellow-400 hover:shadow-md transition duration-300 text-xs w-full">
-                                                    Đăng ký ngay
-                                                </button>
-                                            </form>
-                                        }
-                                        else
-                                        {
-                                            <a asp-area="Identity" asp-page="/Account/Login" asp-route-returnUrl="@Url.Action("Details", "Courses", new { id = Model.Id })"
-                                               class="inline-block bg-gray-200 text-gray-600 px-4 py-2 rounded-lg font-medium hover:bg-gray-300 transition duration-300 text-xs w-full text-center">
-                                                Đăng nhập để ĐK
-                                            </a>
+                                            // TRƯỜNG HỢP 4: ĐÃ KẾT THÚC / HỦY
+                                            <span class="inline-block bg-gray-100 text-gray-400 px-3 py-2 rounded-lg text-xs w-full text-center font-medium border border-gray-200 cursor-not-allowed">
+                                                Đã đóng
+                                            </span>
                                         }
                                     </td>
                                 </tr>

@@ -26,6 +26,16 @@
             <dd class="text-sm text-gray-900 col-span-2">@Model.Enrollments.Count() / @Model.MaxStudents</dd>
         </div>
         <div class="grid grid-cols-3 gap-4">
+            <dt class="text-sm font-medium text-gray-500">Sĩ số (Min/Max)</dt>
+            <dd class="text-sm text-gray-900 col-span-2">
+                @Model.MinStudents - @Model.MaxStudents (Hiện tại: @Model.Enrollments.Count)
+            </dd>
+        </div>
+        <div class="grid grid-cols-3 gap-4">
+            <dt class="text-sm font-medium text-gray-500">@Html.DisplayNameFor(model => model.Status)</dt>
+            <dd class="text-sm text-gray-900 col-span-2 font-bold">@Model.Status</dd>
+        </div>
+        <div class="grid grid-cols-3 gap-4">
             <dt class="text-sm font-medium text-gray-500">@Html.DisplayNameFor(model => model.Format)</dt>
             <dd class="text-sm text-gray-900 col-span-2">@Html.DisplayFor(model => model.Format)</dd>
         </div>

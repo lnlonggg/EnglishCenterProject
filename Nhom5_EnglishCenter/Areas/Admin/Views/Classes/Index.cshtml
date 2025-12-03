@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<TrungTamAnhNgu.Web.Models.Class>
+@using TrungTamAnhNgu.Web.Models
 
 @{
     ViewData["Title"] = "Quản lý Lớp học";
@@ -15,11 +16,11 @@
     <table class="min-w-full bg-white">
         <thead class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
             <tr>
-                <th class="py-3 px-6 text-left">@Html.DisplayNameFor(model => model.ClassName)</th>
-                <th class="py-3 px-6 text-left">@Html.DisplayNameFor(model => model.Course)</th>
-                <th class="py-3 px-6 text-left">@Html.DisplayNameFor(model => model.Teacher)</th>
-                <th class="py-3 px-6 text-left">@Html.DisplayNameFor(model => model.Schedule)</th>
-                <th class="py-3 px-6 text-left">@Html.DisplayNameFor(model => model.StartDate)</th>
+                <th class="py-3 px-6 text-left">Tên lớp</th>
+                <th class="py-3 px-6 text-left">Khóa học</th>
+                <th class="py-3 px-6 text-left">Lịch học</th>
+                <th class="py-3 px-6 text-center">Sĩ số (Min/Max)</th>
+                <th class="py-3 px-6 text-center">Trạng thái</th>
                 <th class="py-3 px-6 text-right">Hành động</th>
             </tr>
         </thead>
@@ -34,17 +35,36 @@
                         @Html.DisplayFor(modelItem => item.Course.Title)
                     </td>
                     <td class="py-3 px-6 text-left">
-                        @Html.DisplayFor(modelItem => item.Teacher.ApplicationUser.FullName)
-                    </td>
-                    <td class="py-3 px-6 text-left">
                         @Html.DisplayFor(modelItem => item.Schedule)
                     </td>
-                    <td class="py-3 px-6 text-left">
-                        @Html.DisplayFor(modelItem => item.StartDate)
+                    <td class="py-3 px-6 text-center">
+                        <span class="font-bold">@item.Enrollments.Count</span> / @item.MinStudents - @item.MaxStudents
+                    </td>
+                    <td class="py-3 px-6 text-center">
+                        @if (item.Status == ClassStatus.Planned)
+                        {
+                            <span class="bg-gray-200 text-gray-800 py-1 px-3 rounded-full text-xs">Dự kiến</span>
+                        }
+                        else if (item.Status == ClassStatus.Open)
+                        {
+                            <span class="bg-green-200 text-green-800 py-1 px-3 rounded-full text-xs font-bold">Đang tuyển sinh</span>
+                        }
+                        else if (item.Status == ClassStatus.Active)
+                        {
+                            <span class="bg-blue-200 text-blue-800 py-1 px-3 rounded-full text-xs font-bold">Đang học</span>
+                        }
+                        else if (item.Status == ClassStatus.Finished)
+                        {
+                            <span class="bg-purple-200 text-purple-800 py-1 px-3 rounded-full text-xs">Đã kết thúc</span>
+                        }
+                        else
+                        {
+                            <span class="bg-red-200 text-red-800 py-1 px-3 rounded-full text-xs">Đã hủy</span>
+                        }
                     </td>
                     <td class="py-3 px-6 text-right">
                         <a asp-action="Edit" asp-route-id="@item.Id" class="text-indigo-600 hover:text-indigo-900 px-2">Sửa</a> |
-                        <a asp-action="Details" asp-route-id="@item.Id" class="text-gray-600 hover:text-gray-900 px-2">Chi tiết</a> |
+                        <a asp-action="Details" asp-route-id="@item.Id" class="text-blue-600 hover:text-blue-900 px-2">Chi tiết</a> |
                         <a asp-action="Delete" asp-route-id="@item.Id" class="text-red-600 hover:text-red-900 px-2">Xóa</a>
                     </td>
                 </tr>

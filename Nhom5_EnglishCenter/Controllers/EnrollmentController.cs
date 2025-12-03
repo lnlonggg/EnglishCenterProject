@@ -41,10 +41,17 @@ namespace Nhom5_EnglishCenter.Controllers
                 return NotFound("Không tìm thấy hồ sơ học viên.");
             }
 
+
             var classToEnroll = await _context.Classes.FindAsync(classId);
             if (classToEnroll == null)
             {
                 return NotFound("Lớp học không tồn tại.");
+            }
+
+            if (classToEnroll.Status != ClassStatus.Open)
+            {
+                TempData["ErrorMessage"] = "Lớp học này hiện không nhận đăng ký (Đã đóng hoặc Chưa mở).";
+                return RedirectToAction("Details", "Courses", new { id = classToEnroll.CourseId });
             }
 
             var existingEnrollment = await _context.Enrollments

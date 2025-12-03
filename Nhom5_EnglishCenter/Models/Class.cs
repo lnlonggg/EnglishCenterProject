@@ -18,7 +18,9 @@ namespace TrungTamAnhNgu.Web.Models
         public string Schedule { get; set; }
 
         public int MaxStudents { get; set; }
- 
+
+        public int MinStudents { get; set; } = 5;
+        public ClassStatus Status { get; set; } = ClassStatus.Planned;
         public ClassFormat Format { get; set; } 
         public string? Location { get; set; } 
         public string? MeetingUrl { get; set; } 

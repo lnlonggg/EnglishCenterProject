@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using TrungTamAnhNgu.Web.Models;
 
 namespace TrungTamAnhNgu.Web.ViewModels
@@ -24,13 +25,21 @@ namespace TrungTamAnhNgu.Web.ViewModels
 
         [Required(ErrorMessage = "Vui lòng nhập Lịch học")]
         [StringLength(100)]
-        [Display(Name = "Lịch học (VD: 18:00 - 20:00, T2-T4-T6)")]
+        [Display(Name = "Lịch học")]
         public string Schedule { get; set; }
 
-        [Required(ErrorMessage = "Vui lòng nhập Sĩ số")]
+        [Required(ErrorMessage = "Vui lòng nhập Sĩ số tối đa")]
         [Range(1, 100, ErrorMessage = "Sĩ số phải từ 1 đến 100")]
         [Display(Name = "Sĩ số tối đa")]
         public int MaxStudents { get; set; }
+
+        [Required(ErrorMessage = "Vui lòng nhập Sĩ số tối thiểu")]
+        [Range(1, 100, ErrorMessage = "Sĩ số tối thiểu phải > 0")]
+        [Display(Name = "Sĩ số tối thiểu")]
+        public int MinStudents { get; set; } = 5;
+
+        [Display(Name = "Trạng thái")]
+        public ClassStatus Status { get; set; }
 
         [Required(ErrorMessage = "Vui lòng chọn Hình thức")]
         [Display(Name = "Hình thức")]
