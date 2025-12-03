@@ -24,6 +24,9 @@ namespace TrungTamAnhNgu.Web.Models
 
         public string? ImageUrl { get; set; }
 
+        [StringLength(50)]
+        public string? Category { get; set; } 
+
         public virtual ICollection<Class> Classes { get; set; } = new List<Class>();
     }
 }

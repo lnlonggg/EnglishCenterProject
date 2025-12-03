@@ -11,8 +11,11 @@ namespace TrungTamAnhNgu.Web.Models
         public string? Bio { get; set; }
 
         public string? AvatarUrl { get; set; }
+        [StringLength(50)]
+        public string? Specialization { get; set; } 
 
         public string ApplicationUserId { get; set; }
+
         public virtual ApplicationUser ApplicationUser { get; set; }
 
         public virtual ICollection<Class> Classes { get; set; } = new List<Class>();

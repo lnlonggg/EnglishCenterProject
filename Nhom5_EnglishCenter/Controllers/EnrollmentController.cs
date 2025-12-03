@@ -67,7 +67,11 @@ namespace Nhom5_EnglishCenter.Controllers
 
                 return RedirectToAction("Checkout", "Payment", new { enrollmentId = existingEnrollment.Id });
             }
-
+            if (await IsStudentScheduleConflict(studentProfile.Id, classId))
+            {
+                TempData["ErrorMessage"] = "Bạn không thể đăng ký vì bị trùng lịch với một lớp học khác đang tham gia.";
+                return RedirectToAction("Details", "Courses", new { id = classToEnroll.CourseId });
+            }
             var enrollment = new Enrollment
             {
                 StudentId = studentProfile.Id,
@@ -80,6 +84,65 @@ namespace Nhom5_EnglishCenter.Controllers
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Checkout", "Payment", new { enrollmentId = enrollment.Id });
+        }
+
+        // --- N.1 HÀM PHỤ TRỢ: PHÂN TÍCH LỊCH ---
+        private (List<string> Days, string Shift) ParseScheduleInfo(string schedule)
+        {
+            // Ví dụ: "T2, T4 | Ca 1 (08:00 - 10:00)"
+            var result = (Days: new List<string>(), Shift: "");
+            if (string.IsNullOrEmpty(schedule)) return result;
+
+            var parts = schedule.Split('|');
+            if (parts.Length >= 2)
+            {
+                result.Days = parts[0].Trim().Split(',').Select(d => d.Trim()).ToList();
+                result.Shift = parts[1].Trim(); // Lấy nguyên cụm "Ca 1..." để so sánh
+            }
+            return result;
+        }
+
+        // --- N.2 HÀM CHECK TRÙNG LỊCH HỌC VIÊN ---
+        private async Task<bool> IsStudentScheduleConflict(int studentId, int newClassId)
+        {
+            // 1. Lấy thông tin lớp muốn đăng ký
+            var newClass = await _context.Classes.FindAsync(newClassId);
+            if (newClass == null) return false;
+
+            var newInfo = ParseScheduleInfo(newClass.Schedule);
+            if (newInfo.Days.Count == 0) return false; // Lịch lỗi, bỏ qua
+
+            // 2. Lấy danh sách các lớp ĐANG HỌC của học viên này
+            // (Status là Paid hoặc Pending, và lớp đó chưa kết thúc)
+            var activeEnrollments = await _context.Enrollments
+                .Include(e => e.Class)
+                .Where(e => e.StudentId == studentId &&
+                            (e.Status == EnrollmentStatus.Paid || e.Status == EnrollmentStatus.Pending) &&
+                            e.Class.Status != ClassStatus.Finished &&
+                            e.Class.Status != ClassStatus.Cancelled)
+                .ToListAsync();
+
+            // 3. So sánh
+            foreach (var enrollment in activeEnrollments)
+            {
+                // Kiểm tra trùng thời gian (StartDate - EndDate)
+                if (enrollment.Class.StartDate < newClass.EndDate && enrollment.Class.EndDate > newClass.StartDate)
+                {
+                    var currentInfo = ParseScheduleInfo(enrollment.Class.Schedule);
+
+                    // Nếu trùng Ca học
+                    if (currentInfo.Shift == newInfo.Shift)
+                    {
+                        // Kiểm tra xem có trùng Thứ không
+                        if (currentInfo.Days.Intersect(newInfo.Days).Any())
+                        {
+                            return true; // CÓ XUNG ĐỘT
+                        }
+                    }
+                }
+            }
+
+            return false; // Không xung đột
         }
     }
 }

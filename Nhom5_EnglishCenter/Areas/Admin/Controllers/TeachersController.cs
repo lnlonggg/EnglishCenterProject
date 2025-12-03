@@ -1,15 +1,15 @@
-﻿using TrungTamAnhNgu.Web.ViewModels;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using TrungTamAnhNgu.Web.Data;
 using TrungTamAnhNgu.Web.Models;
+using Microsoft.AspNetCore.Authorization;
+using TrungTamAnhNgu.Web.ViewModels;
+using Microsoft.AspNetCore.Identity;
 
 namespace Nhom5_EnglishCenter.Areas.Admin.Controllers
 {
@@ -79,7 +79,8 @@ namespace Nhom5_EnglishCenter.Areas.Admin.Controllers
                     {
                         ApplicationUserId = newAppUser.Id,
                         Bio = viewModel.Bio,
-                        AvatarUrl = viewModel.AvatarUrl
+                        AvatarUrl = viewModel.AvatarUrl,
+                        Specialization = viewModel.Specialization
                     };
 
                     _context.Teachers.Add(newTeacherProfile);
@@ -109,7 +110,8 @@ namespace Nhom5_EnglishCenter.Areas.Admin.Controllers
                 Email = teacher.ApplicationUser.Email,
                 FullName = teacher.ApplicationUser.FullName,
                 Bio = teacher.Bio,
-                AvatarUrl = teacher.AvatarUrl
+                AvatarUrl = teacher.AvatarUrl,
+                Specialization = teacher.Specialization
             };
 
             return View(viewModel);
@@ -136,6 +138,7 @@ namespace Nhom5_EnglishCenter.Areas.Admin.Controllers
                     teacherFromDb.ApplicationUser.UserName = viewModel.Email;
                     teacherFromDb.Bio = viewModel.Bio;
                     teacherFromDb.AvatarUrl = viewModel.AvatarUrl;
+                    teacherFromDb.Specialization = viewModel.Specialization;
 
                     _context.Update(teacherFromDb);
 

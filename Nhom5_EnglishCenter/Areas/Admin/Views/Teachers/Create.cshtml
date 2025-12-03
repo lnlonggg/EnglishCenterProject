@@ -35,6 +35,25 @@
             <span asp-validation-for="Bio" class="text-red-600 text-sm"></span>
         </div>
         <div class="mb-4">
+            <label asp-for="Specialization" class="block text-sm font-medium text-gray-700"></label>
+            
+            @* Input kết hợp DataList để gợi ý *@
+            <input asp-for="Specialization" list="specializations" 
+                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-blue focus:ring-brand-blue sm:text-sm" 
+                   placeholder="Chọn hoặc nhập chuyên môn mới..." />
+            
+            @* Danh sách các lựa chọn có sẵn *@
+            <datalist id="specializations">
+                <option value="IELTS" />
+                <option value="TOEIC"/>
+                <option value="Tiếng Anh Giao Tiếp"/>
+                <option value="Tiếng Anh Trẻ Em"/>
+                <option value="Ngữ Pháp Cơ Bản"/>
+            </datalist>
+            
+            <span asp-validation-for="Specialization" class="text-red-600 text-sm"></span>
+        </div>
+        <div class="mb-4">
             <label asp-for="AvatarUrl" class="block text-sm font-medium text-gray-700"></label>
             <input asp-for="AvatarUrl" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-blue focus:ring-brand-blue sm:text-sm" />
             <span asp-validation-for="AvatarUrl" class="text-red-600 text-sm"></span>

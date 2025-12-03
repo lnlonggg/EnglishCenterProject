@@ -69,6 +69,30 @@ namespace Nhom5_EnglishCenter.Areas.Admin.Controllers
                     ViewData["TeacherId"] = new SelectList(_context.Teachers.Include(t => t.ApplicationUser), "Id", "ApplicationUser.FullName", viewModel.TeacherId);
                     return View(viewModel);
                 }
+
+                if (!await IsTeacherQualified(viewModel.TeacherId, viewModel.CourseId))
+                {
+
+                    var course = await _context.Courses.FindAsync(viewModel.CourseId);
+                    var teacher = await _context.Teachers.Include(t => t.ApplicationUser).FirstOrDefaultAsync(t => t.Id == viewModel.TeacherId);
+
+                    ModelState.AddModelError("", $"Giáo viên {teacher?.ApplicationUser?.FullName} (Chuyên môn: {teacher?.Specialization ?? "Không"}) không phù hợp để dạy khóa {course?.Title} (Yêu cầu: {course?.Category}).");
+
+                    ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Title", viewModel.CourseId);
+                    ViewData["TeacherId"] = new SelectList(_context.Teachers.Include(t => t.ApplicationUser), "Id", "ApplicationUser.FullName", viewModel.TeacherId);
+                    return View(viewModel);
+                }
+
+                var workloadError = await CheckTeacherWorkload(viewModel.TeacherId, viewModel.Schedule, viewModel.StartDate, viewModel.EndDate);
+                if (workloadError != null)
+                {
+                    ModelState.AddModelError("", workloadError); // Hiển thị lỗi cụ thể
+
+                    ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Title", viewModel.CourseId);
+                    ViewData["TeacherId"] = new SelectList(_context.Teachers.Include(t => t.ApplicationUser), "Id", "ApplicationUser.FullName", viewModel.TeacherId);
+                    return View(viewModel);
+                }
+
                 Class newClass = new Class
                 {
                     ClassName = viewModel.ClassName,
@@ -139,6 +163,15 @@ namespace Nhom5_EnglishCenter.Areas.Admin.Controllers
                     ViewData["TeacherId"] = new SelectList(_context.Teachers.Include(t => t.ApplicationUser), "Id", "ApplicationUser.FullName", viewModel.TeacherId);
                     return View(viewModel);
                 }
+                var workloadError = await CheckTeacherWorkload(viewModel.TeacherId, viewModel.Schedule, viewModel.StartDate, viewModel.EndDate, id);
+                if (workloadError != null)
+                {
+                    ModelState.AddModelError("", workloadError);
+
+                    ViewData["CourseId"] = new SelectList(_context.Courses, "Id", "Title", viewModel.CourseId);
+                    ViewData["TeacherId"] = new SelectList(_context.Teachers.Include(t => t.ApplicationUser), "Id", "ApplicationUser.FullName", viewModel.TeacherId);
+                    return View(viewModel);
+                }
                 try
                 {
                     var classFromDb = await _context.Classes.FindAsync(id);
@@ -200,6 +233,7 @@ namespace Nhom5_EnglishCenter.Areas.Admin.Controllers
             return _context.Classes.Any(e => e.Id == id);
         }
 
+        //Kiem tra xung dot lich day
         private async Task<bool> IsScheduleConflict(int teacherId, string schedule, DateTime start, DateTime end, int? ignoreClassId = null)
         {
             return await _context.Classes.AnyAsync(c =>
@@ -209,6 +243,92 @@ namespace Nhom5_EnglishCenter.Areas.Admin.Controllers
                 c.Schedule == schedule &&            
                 c.StartDate < end && c.EndDate > start 
             );
+        }
+
+        //Kiem tra chuyen môn
+        private async Task<bool> IsTeacherQualified(int teacherId, int courseId)
+        {
+            var teacher = await _context.Teachers.FindAsync(teacherId);
+            var course = await _context.Courses.FindAsync(courseId);
+
+            if (teacher == null || course == null) return false;
+
+            // 1. Nếu khóa học KHÔNG yêu cầu phân loại (Category rỗng) -> Ai dạy cũng được -> Hợp lệ
+            if (string.IsNullOrEmpty(course.Category)) return true;
+
+            // 2. Nếu khóa học CÓ yêu cầu, mà Giáo viên chưa cập nhật chuyên môn -> Không hợp lệ
+            if (string.IsNullOrEmpty(teacher.Specialization)) return false;
+
+            // 3. Kiểm tra xem chuyên môn giáo viên có chứa phân loại khóa học không
+            // Ví dụ: Course="IELTS", Teacher="TOEIC, IELTS" -> Có chứa -> Hợp lệ
+            return teacher.Specialization.ToLower().Contains(course.Category.ToLower());
+        }
+
+        // --- HÀM PHỤ TRỢ: PHÂN TÍCH LỊCH HỌC ---
+        // Input: "T2, T4 | Ca 1 (08:00 - 10:00)"
+        // Output: List ngày ["T2", "T4"] và số giờ dạy (2)
+        private (List<string> Days, int Duration) ParseSchedule(string schedule)
+        {
+            var result = (Days: new List<string>(), Duration: 0);
+            if (string.IsNullOrEmpty(schedule)) return result;
+
+            var parts = schedule.Split('|');
+            if (parts.Length < 2) return result;
+            var daysPart = parts[0].Trim();
+            result.Days = daysPart.Split(',').Select(d => d.Trim()).ToList();
+            result.Duration = 2;
+
+            return result;
+        }
+
+        // CHECK WORKLOAD GIÁO VIÊN
+        private async Task<string?> CheckTeacherWorkload(int teacherId, string newSchedule, DateTime start, DateTime end, int? ignoreClassId = null)
+        {
+            var newClassInfo = ParseSchedule(newSchedule);
+            if (newClassInfo.Days.Count == 0) return null; // Lịch lỗi, bỏ qua check này
+
+            var activeClasses = await _context.Classes
+                .Where(c => c.TeacherId == teacherId &&
+                            c.Status != ClassStatus.Cancelled &&
+                            c.Status != ClassStatus.Finished &&
+                            c.Id != ignoreClassId && 
+                            c.StartDate < end && c.EndDate > start) 
+                .ToListAsync();
+
+            var dailyWorkload = new Dictionary<string, int>();
+            var allDaysWorked = new HashSet<string>();
+
+            foreach (var c in activeClasses)
+            {
+                var info = ParseSchedule(c.Schedule);
+                foreach (var day in info.Days)
+                {
+                    if (!dailyWorkload.ContainsKey(day)) dailyWorkload[day] = 0;
+                    dailyWorkload[day] += info.Duration;
+                    allDaysWorked.Add(day);
+                }
+            }
+            foreach (var day in newClassInfo.Days)
+            {
+                if (!dailyWorkload.ContainsKey(day)) dailyWorkload[day] = 0;
+                dailyWorkload[day] += newClassInfo.Duration;
+                allDaysWorked.Add(day);
+            }
+
+            foreach (var entry in dailyWorkload)
+            {
+                if (entry.Value > 8)
+                {
+                    return $"Giáo viên bị quá tải vào thứ {entry.Key} (Tổng: {entry.Value} giờ). Tối đa cho phép: 8 giờ/ngày.";
+                }
+            }
+
+            if (allDaysWorked.Count >= 7)
+            {
+                return "Lịch dạy quá dày! Giáo viên cần ít nhất 1 ngày nghỉ trong tuần (Hiện tại dạy cả 7 ngày).";
+            }
+
+            return null;
         }
     }
 }

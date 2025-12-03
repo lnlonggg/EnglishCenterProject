@@ -30,18 +30,9 @@ namespace Nhom5_EnglishCenter.Areas.Admin.Controllers
 
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var course = await _context.Courses
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (course == null)
-            {
-                return NotFound();
-            }
-
+            if (id == null) return NotFound();
+            var course = await _context.Courses.FirstOrDefaultAsync(m => m.Id == id);
+            if (course == null) return NotFound();
             return View(course);
         }
 
@@ -62,7 +53,8 @@ namespace Nhom5_EnglishCenter.Areas.Admin.Controllers
                     Description = viewModel.Description,
                     Price = viewModel.Price,
                     DurationInHours = viewModel.DurationInHours,
-                    ImageUrl = viewModel.ImageUrl
+                    ImageUrl = viewModel.ImageUrl,
+                    Category = viewModel.Category
                 };
 
                 _context.Add(newCourse);
@@ -74,16 +66,10 @@ namespace Nhom5_EnglishCenter.Areas.Admin.Controllers
 
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var course = await _context.Courses.FindAsync(id);
-            if (course == null)
-            {
-                return NotFound();
-            }
+            if (course == null) return NotFound();
 
             CourseViewModel viewModel = new CourseViewModel
             {
@@ -92,7 +78,8 @@ namespace Nhom5_EnglishCenter.Areas.Admin.Controllers
                 Description = course.Description,
                 Price = course.Price,
                 DurationInHours = course.DurationInHours,
-                ImageUrl = course.ImageUrl
+                ImageUrl = course.ImageUrl,
+                Category = course.Category
             };
 
             return View(viewModel);
@@ -102,40 +89,29 @@ namespace Nhom5_EnglishCenter.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, CourseViewModel viewModel)
         {
-            if (id != viewModel.Id)
-            {
-                return NotFound();
-            }
+            if (id != viewModel.Id) return NotFound();
 
             if (ModelState.IsValid)
             {
                 try
                 {
                     var courseFromDb = await _context.Courses.FindAsync(id);
-                    if (courseFromDb == null)
-                    {
-                        return NotFound();
-                    }
+                    if (courseFromDb == null) return NotFound();
 
                     courseFromDb.Title = viewModel.Title;
                     courseFromDb.Description = viewModel.Description;
                     courseFromDb.Price = viewModel.Price;
                     courseFromDb.DurationInHours = viewModel.DurationInHours;
                     courseFromDb.ImageUrl = viewModel.ImageUrl;
+                    courseFromDb.Category = viewModel.Category;
 
                     _context.Update(courseFromDb);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CourseExists(viewModel.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    if (!CourseExists(viewModel.Id)) return NotFound();
+                    else throw;
                 }
                 return RedirectToAction(nameof(Index));
             }
@@ -144,18 +120,9 @@ namespace Nhom5_EnglishCenter.Areas.Admin.Controllers
 
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var course = await _context.Courses
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (course == null)
-            {
-                return NotFound();
-            }
-
+            if (id == null) return NotFound();
+            var course = await _context.Courses.FirstOrDefaultAsync(m => m.Id == id);
+            if (course == null) return NotFound();
             return View(course);
         }
 
@@ -167,9 +134,8 @@ namespace Nhom5_EnglishCenter.Areas.Admin.Controllers
             if (course != null)
             {
                 _context.Courses.Remove(course);
+                await _context.SaveChangesAsync();
             }
-
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 

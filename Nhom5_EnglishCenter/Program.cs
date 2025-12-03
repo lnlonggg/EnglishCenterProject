@@ -13,16 +13,10 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
-
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders()
     .AddDefaultUI();
-builder.Services.ConfigureApplicationCookie(options =>
-{
-    options.LoginPath = "/Identity/Account/Login";
-    options.AccessDeniedPath = "/Home/Error/403";
-});
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
@@ -61,6 +55,10 @@ try
     using (var scope = app.Services.CreateScope())
     {
         var services = scope.ServiceProvider;
+        var context = services.GetRequiredService<ApplicationDbContext>();
+
+        await context.Database.MigrateAsync();
+
         await DbInitializer.InitializeAsync(services);
     }
 }

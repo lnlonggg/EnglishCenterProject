@@ -34,5 +34,9 @@ namespace TrungTamAnhNgu.Web.ViewModels
         [Display(Name = "Đường dẫn Ảnh đại diện")]
         [Url(ErrorMessage = "Đường dẫn ảnh không hợp lệ")]
         public string? AvatarUrl { get; set; }
+
+        [Display(Name = "Chuyên môn (VD: IELTS, TOEIC)")]
+        [StringLength(50)]
+        public string? Specialization { get; set; }
     }
 }

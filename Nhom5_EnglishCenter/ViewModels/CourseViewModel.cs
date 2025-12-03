@@ -27,5 +27,9 @@ namespace TrungTamAnhNgu.Web.ViewModels
 
         [Display(Name = "Đường dẫn Ảnh bìa")]
         public string? ImageUrl { get; set; }
+
+        [Display(Name = "Phân loại (VD: IELTS, TOEIC)")]
+        [StringLength(50)]
+        public string? Category { get; set; }
     }
 }

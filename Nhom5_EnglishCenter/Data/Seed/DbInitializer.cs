@@ -12,20 +12,20 @@ namespace TrungTamAnhNgu.Web.Data.Seed
             var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
             var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
 
-            // 1. Roles & Admin
+            // 1. Roles & Admin (Bắt buộc phải có)
             await SeedRolesAsync(roleManager);
             await SeedAdminUserAsync(userManager);
 
-            // 2. Khóa học
+            // 2. Khóa học (Tạo 2 khóa cơ bản)
             await SeedCoursesAsync(context);
 
-            // 3. Giáo viên (Đủ 15 người)
+            // 3. Giáo viên (Tạo 2 GV để test xung đột)
             await SeedTeachersAsync(userManager, context);
 
-            // 4. Lớp học (Đủ số lượng)
+            // 4. Lớp học (Tạo các lớp theo kịch bản Status)
             await SeedClassesAsync(context);
 
-            // 5. Học viên (Đủ 100 người)
+            // 5. Học viên (Tạo 1 HV để test ghi danh)
             await SeedStudentsAsync(userManager, context);
         }
 
@@ -35,9 +35,7 @@ namespace TrungTamAnhNgu.Web.Data.Seed
             foreach (var roleName in roleNames)
             {
                 if (!await roleManager.RoleExistsAsync(roleName))
-                {
                     await roleManager.CreateAsync(new IdentityRole(roleName));
-                }
             }
         }
 
@@ -53,114 +51,104 @@ namespace TrungTamAnhNgu.Web.Data.Seed
 
         private static async Task SeedCoursesAsync(ApplicationDbContext context)
         {
-            if (!await context.Courses.AnyAsync())
+            if (await context.Courses.AnyAsync()) return;
+
+            var courses = new List<Course>
             {
-                var courses = new List<Course>
-                {
-                    new Course { Title = "IELTS Intensive 6.5", Description = "Khóa học IELTS toàn diện 4 kỹ năng.", Price = 11000000, DurationInHours = 120, ImageUrl = "https://placehold.co/400x250/004A99/FFFFFF?text=IELTS" },
-                    new Course { Title = "TOEIC Conquer 750+", Description = "Luyện thi TOEIC cấp tốc.", Price = 6500000, DurationInHours = 96, ImageUrl = "https://placehold.co/400x250/FFD700/004A99?text=TOEIC" },
-                    new Course { Title = "Tiếng Anh Giao Tiếp Pro", Description = "Tự tin giao tiếp công sở.", Price = 4800000, DurationInHours = 60, ImageUrl = "https://placehold.co/400x250/28a745/FFFFFF?text=Communication" },
-                };
-                await context.Courses.AddRangeAsync(courses);
-                await context.SaveChangesAsync();
-            }
+                new Course { Title = "IELTS Foundation", Description = "Nền tảng IELTS.", Price = 5000000, DurationInHours = 60, Category = "IELTS", ImageUrl = "https://placehold.co/400x250/004A99/FFFFFF?text=IELTS" },
+                new Course { Title = "Tiếng Anh Giao Tiếp", Description = "Giao tiếp tự tin.", Price = 3000000, DurationInHours = 40, Category = "Giao Tiếp", ImageUrl = "https://placehold.co/400x250/FFD700/004A99?text=Communication" }
+            };
+            await context.Courses.AddRangeAsync(courses);
+            await context.SaveChangesAsync();
         }
 
         private static async Task SeedTeachersAsync(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
         {
-            int currentCount = await context.Teachers.CountAsync();
-            if (currentCount < 15)
-            {
-                for (int i = currentCount + 1; i <= 15; i++)
-                {
-                    string email = $"teacher{i}@ecenter.com";
-                    if (await userManager.FindByEmailAsync(email) == null)
-                    {
-                        var user = new ApplicationUser { UserName = email, Email = email, FullName = $"Giáo Viên {i}", EmailConfirmed = true };
-                        var result = await userManager.CreateAsync(user, "Password123!");
-                        if (result.Succeeded)
-                        {
-                            await userManager.AddToRoleAsync(user, "Teacher");
-                            await context.Teachers.AddAsync(new Teacher { ApplicationUserId = user.Id, Bio = "Giảng viên kinh nghiệm.", AvatarUrl = $"https://placehold.co/150?text=GV{i}" });
-                        }
-                    }
-                }
-                await context.SaveChangesAsync();
-            }
+            if (await context.Teachers.AnyAsync()) return;
+
+            // GV 1: Chuyên IELTS (Sẽ dùng để test xung đột lịch)
+            var t1 = new ApplicationUser { UserName = "teacher1@ecenter.com", Email = "teacher1@ecenter.com", FullName = "Mr. Test A (IELTS)", EmailConfirmed = true };
+            await userManager.CreateAsync(t1, "Password123!");
+            await userManager.AddToRoleAsync(t1, "Teacher");
+            await context.Teachers.AddAsync(new Teacher { ApplicationUserId = t1.Id, Bio = "Chuyên gia IELTS", Specialization = "IELTS" });
+
+            // GV 2: Chuyên Giao tiếp (Rảnh rỗi)
+            var t2 = new ApplicationUser { UserName = "teacher2@ecenter.com", Email = "teacher2@ecenter.com", FullName = "Ms. Test B (Giao Tiếp)", EmailConfirmed = true };
+            await userManager.CreateAsync(t2, "Password123!");
+            await userManager.AddToRoleAsync(t2, "Teacher");
+            await context.Teachers.AddAsync(new Teacher { ApplicationUserId = t2.Id, Bio = "Chuyên gia Giao tiếp", Specialization = "Giao Tiếp" });
+
+            await context.SaveChangesAsync();
         }
 
         private static async Task SeedClassesAsync(ApplicationDbContext context)
         {
-            var teachers = await context.Teachers.ToListAsync();
-            var courses = await context.Courses.ToListAsync();
-            var random = new Random();
+            if (await context.Classes.AnyAsync()) return;
 
-            if (teachers.Any() && courses.Any() && await context.Classes.CountAsync() < 30)
+            var ielts = await context.Courses.FirstOrDefaultAsync(c => c.Title.Contains("IELTS"));
+            var comm = await context.Courses.FirstOrDefaultAsync(c => c.Title.Contains("Giao Tiếp"));
+
+            var teacher1 = await context.Teachers.Include(t => t.ApplicationUser).FirstOrDefaultAsync(t => t.ApplicationUser.Email == "teacher1@ecenter.com");
+            var teacher2 = await context.Teachers.Include(t => t.ApplicationUser).FirstOrDefaultAsync(t => t.ApplicationUser.Email == "teacher2@ecenter.com");
+
+            var classes = new List<Class>
             {
-                for (int i = 0; i < 20; i++)
-                {
-                    var course = courses[random.Next(courses.Count)];
-                    var teacher = teachers[random.Next(teachers.Count)];
-                    var startDate = DateTime.Now.AddDays(random.Next(-60, 60));
+                // 1. Lớp ĐANG TUYỂN SINH (Open) - Để test đăng ký thành công
+                new Class { ClassName = "IELTS-OPEN-01", CourseId = ielts.Id, TeacherId = teacher1.Id,
+                            StartDate = DateTime.Now.AddDays(10), EndDate = DateTime.Now.AddMonths(3),
+                            Schedule = "T2, T4, T6 | 18:00 - 20:00", // Lịch tối 2-4-6
+                            MinStudents = 5, MaxStudents = 20, Status = ClassStatus.Open, Format = ClassFormat.Offline, Location = "P.101" },
 
-                    var newClass = new Class
-                    {
-                        ClassName = $"{course.Title.Substring(0, 3).ToUpper()}-{random.Next(100, 999)}",
-                        StartDate = startDate,
-                        EndDate = startDate.AddMonths(3),
-                        Schedule = random.Next(0, 2) == 0 ? "T2-T4-T6 18h" : "T3-T5-T7 19h",
-                        MaxStudents = 20,
-                        Format = (ClassFormat)random.Next(0, 2),
-                        Location = "Phòng " + random.Next(101, 404),
-                        CourseId = course.Id,
-                        TeacherId = teacher.Id
-                    };
-                    await context.Classes.AddAsync(newClass);
-                }
-                await context.SaveChangesAsync();
-            }
+                // 2. Lớp DỰ KIẾN (Planned) - Để test nút "Sắp mở"
+                new Class { ClassName = "COMM-PLAN-01", CourseId = comm.Id, TeacherId = teacher2.Id,
+                            StartDate = DateTime.Now.AddDays(30), EndDate = DateTime.Now.AddMonths(4),
+                            Schedule = "T3, T5, T7 | 19:00 - 21:00",
+                            MinStudents = 10, MaxStudents = 30, Status = ClassStatus.Planned, Format = ClassFormat.Online, MeetingUrl = "zoom.us" },
+
+                // 3. Lớp ĐANG HỌC (Active) - Để test nút "Đang học" và test TRÙNG LỊCH
+                new Class { ClassName = "IELTS-ACTIVE-01", CourseId = ielts.Id, TeacherId = teacher1.Id,
+                            StartDate = DateTime.Now.AddDays(-10), EndDate = DateTime.Now.AddMonths(2),
+                            Schedule = "CN | 08:00 - 10:00", // Lịch sáng CN
+                            MinStudents = 5, MaxStudents = 15, Status = ClassStatus.Active, Format = ClassFormat.Offline, Location = "P.202" },
+
+                // 4. Lớp ĐÃ KẾT THÚC (Finished) - Để test nút "Đã đóng"
+                new Class { ClassName = "COMM-OLD-01", CourseId = comm.Id, TeacherId = teacher2.Id,
+                            StartDate = DateTime.Now.AddMonths(-4), EndDate = DateTime.Now.AddMonths(-1),
+                            Schedule = "T2, T4 | 18:00 - 20:00",
+                            MinStudents = 5, MaxStudents = 20, Status = ClassStatus.Finished, Format = ClassFormat.Online }
+            };
+
+            await context.Classes.AddRangeAsync(classes);
+            await context.SaveChangesAsync();
         }
 
         private static async Task SeedStudentsAsync(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
         {
-            int currentStudents = await context.Students.CountAsync();
-            var classes = await context.Classes.Include(c => c.Course).ToListAsync();
-            var random = new Random();
+            if (await context.Students.AnyAsync()) return;
 
-            if (currentStudents < 100 && classes.Any())
+            // Tạo 1 học viên để test
+            string email = "hv1@email.com";
+            var user = new ApplicationUser { UserName = email, Email = email, FullName = "Nguyễn Văn Test", EmailConfirmed = true };
+            await userManager.CreateAsync(user, "Password123!");
+            await userManager.AddToRoleAsync(user, "Student");
+
+            var student = new Student { ApplicationUserId = user.Id };
+            await context.Students.AddAsync(student);
+            await context.SaveChangesAsync();
+
+            // Cho học viên này ĐANG HỌC lớp Active (Lớp số 3 ở trên)
+            // Mục đích: Để test xem nếu nó đăng ký lớp khác trùng giờ với lớp này thì có bị chặn không
+            var activeClass = await context.Classes.FirstOrDefaultAsync(c => c.Status == ClassStatus.Active);
+            if (activeClass != null)
             {
-                for (int i = currentStudents + 1; i <= 100; i++)
+                var enrollment = new Enrollment
                 {
-                    string email = $"hv{i}@email.com";
-
-                    // Kiểm tra kỹ nếu user đã tồn tại thì bỏ qua
-                    if (await userManager.FindByEmailAsync(email) == null)
-                    {
-                        var user = new ApplicationUser { UserName = email, Email = email, FullName = $"Học Viên {i}", EmailConfirmed = true };
-                        var result = await userManager.CreateAsync(user, "Password123!");
-
-                        if (result.Succeeded)
-                        {
-                            await userManager.AddToRoleAsync(user, "Student");
-                            var studentProfile = new Student { ApplicationUserId = user.Id };
-                            await context.Students.AddAsync(studentProfile);
-                            // Lưu Student ngay để lấy Id dùng cho Enrollment
-                            await context.SaveChangesAsync();
-
-                            // Ghi danh ngẫu nhiên
-                            var class1 = classes[random.Next(classes.Count)];
-                            var enrollment = new Enrollment
-                            {
-                                StudentId = studentProfile.Id,
-                                ClassId = class1.Id,
-                                EnrollmentDate = DateTime.Now.AddDays(-random.Next(1, 30)),
-                                Status = EnrollmentStatus.Paid,
-                                FinalGrade = (decimal)(random.Next(50, 95) / 10.0)
-                            };
-                            await context.Enrollments.AddAsync(enrollment);
-                        }
-                    }
-                }
+                    StudentId = student.Id,
+                    ClassId = activeClass.Id,
+                    EnrollmentDate = activeClass.StartDate.AddDays(-5),
+                    Status = EnrollmentStatus.Paid
+                };
+                await context.Enrollments.AddAsync(enrollment);
                 await context.SaveChangesAsync();
             }
         }
