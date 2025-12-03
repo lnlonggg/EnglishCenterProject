@@ -19,7 +19,19 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\images\courses\" />
+    <Folder Include="wwwroot\images\banners\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="wwwroot\images\banners\home-banner.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\images\courses\ielts.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\images\courses\toeic.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

@@ -55,8 +55,8 @@ namespace TrungTamAnhNgu.Web.Data.Seed
 
             var courses = new List<Course>
             {
-                new Course { Title = "IELTS Foundation", Description = "Nền tảng IELTS.", Price = 5000000, DurationInHours = 60, Category = "IELTS", ImageUrl = "https://placehold.co/400x250/004A99/FFFFFF?text=IELTS" },
-                new Course { Title = "Tiếng Anh Giao Tiếp", Description = "Giao tiếp tự tin.", Price = 3000000, DurationInHours = 40, Category = "Giao Tiếp", ImageUrl = "https://placehold.co/400x250/FFD700/004A99?text=Communication" }
+                new Course { Title = "IELTS Foundation", Description = "Nền tảng IELTS.", Price = 5000000, DurationInHours = 60, Category = "IELTS", ImageUrl = "/images/courses/ielts.jpg" },
+                new Course { Title = "Tiếng Anh Giao Tiếp", Description = "Giao tiếp tự tin.", Price = 3000000, DurationInHours = 40, Category = "Giao Tiếp", ImageUrl = "/images/courses/communication.jpg" }
             };
             await context.Courses.AddRangeAsync(courses);
             await context.SaveChangesAsync();

@@ -76,7 +76,7 @@ namespace Nhom5_EnglishCenter.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UpdateGrade(int enrollmentId, decimal? finalGrade)
+        public async Task<IActionResult> UpdateGrade(int enrollmentId, string? finalGrade) // 1. Đổi tham số thành string
         {
             var teacherProfile = await GetCurrentTeacherProfile();
             if (teacherProfile == null)
@@ -93,13 +93,28 @@ namespace Nhom5_EnglishCenter.Controllers
                 return NotFound("Không tìm thấy lượt ghi danh hoặc bạn không có quyền sửa.");
             }
 
-            if (finalGrade.HasValue && (finalGrade < 0 || finalGrade > 10))
+            decimal? parsedGrade = null;
+            if (!string.IsNullOrEmpty(finalGrade))
+            {
+                string normalizedGrade = finalGrade.Replace(",", ".");
+
+                if (decimal.TryParse(normalizedGrade, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out decimal result))
+                {
+                    parsedGrade = result;
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Định dạng điểm không hợp lệ.";
+                    return RedirectToAction("ClassDetails", new { id = enrollment.ClassId });
+                }
+            }
+            if (parsedGrade.HasValue && (parsedGrade < 0 || parsedGrade > 10))
             {
                 TempData["ErrorMessage"] = "Điểm số phải nằm trong khoảng từ 0 đến 10.";
             }
             else
             {
-                enrollment.FinalGrade = finalGrade;
+                enrollment.FinalGrade = parsedGrade;
                 _context.Update(enrollment);
                 await _context.SaveChangesAsync();
                 TempData["SuccessMessage"] = "Cập nhật điểm thành công.";

@@ -5,31 +5,41 @@
     ViewData["Title"] = "Trang chủ";
 }
 
+<section class="relative w-full h-[600px] flex items-center bg-gray-900">
 
-<section class="bg-white">
-    <div class="container mx-auto px-6 py-20 md:py-32 grid md:grid-cols-2 gap-12 items-center">
-        <div class="text-center md:text-left">
-            <h1 class="text-4xl md:text-5xl font-bold text-brand-blue leading-tight">
-                Mở Khóa Tương Lai <br class="hidden md:inline"> Với Tiếng Anh
+
+    <div class="absolute inset-0 z-0">
+        <img src="~/images/banners/home-banner.jpg"
+             alt="E-Center Banner"
+             class="w-full h-full object-cover"
+             onerror="this.src='https://placehold.co/1920x600/004A99/FFFFFF?text=Banner+Image'">
+    </div>
+
+
+    <div class="absolute inset-0 z-10 bg-gradient-to-r from-black/80 to-black/40"></div>
+
+    <div class="container relative z-20 mx-auto px-6">
+        <div class="max-w-2xl">
+            <h1 class="text-4xl md:text-6xl font-bold text-white leading-tight mb-6 drop-shadow-lg">
+                Mở Khóa Tương Lai <br> Với Tiếng Anh
             </h1>
-            <p class="mt-6 text-lg text-gray-700">
-                Tham gia cùng hàng ngàn học viên, tự tin giao tiếp và đạt được mục tiêu của bạn với các khóa học chất lượng cao tại E-Center.
+            <p class="text-lg md:text-xl text-gray-200 mb-8 drop-shadow-md">
+                Tham gia cùng hàng ngàn học viên tại E-Center. Chúng tôi cam kết chất lượng đào tạo chuẩn quốc tế, giúp bạn tự tin chinh phục mọi mục tiêu.
             </p>
-            <div class="mt-8 space-x-4">
-                <a asp-controller="Courses" asp-action="Index" class="bg-brand-blue text-white px-8 py-3 rounded-full font-bold text-lg shadow-lg hover:bg-blue-800 transition duration-300">
-                    Khám phá Khóa học
+            <div class="flex flex-col sm:flex-row gap-4">
+                <a asp-controller="Courses" asp-action="Index"
+                   class="px-8 py-4 bg-brand-blue text-white font-bold rounded-full shadow-lg hover:bg-blue-700 hover:scale-105 transition transform duration-300 text-center">
+                    Khám phá Khóa học ngay
                 </a>
                 <a asp-controller="Home" asp-action="Contact" asp-route-subject="Tư vấn lộ trình"
-                   class="text-brand-blue font-bold text-lg hover:underline">
+                   class="px-8 py-4 bg-white text-brand-blue font-bold rounded-full shadow-lg hover:bg-gray-100 hover:scale-105 transition transform duration-300 text-center">
                     Tư vấn miễn phí
                 </a>
             </div>
         </div>
-        <div>
-            <img src="https://placehold.co/600x400/004A99/FFFFFF?text=Lop+Hoc+Hien+Dai" alt="Lớp học hiện đại" class="rounded-lg shadow-2xl w-full">
-        </div>
     </div>
 </section>
+
 
 <section class="py-20 bg-gray-50">
     <div class="container mx-auto px-6">
@@ -37,91 +47,212 @@
             Tại sao chọn E-Center?
         </h2>
         <div class="grid md:grid-cols-3 gap-8">
-            <div class="bg-white p-8 rounded-lg shadow-lg text-center">
-                <div class="flex justify-center mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12 text-brand-blue">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c.24 0 .468.02.69.058M12 21c-.24 0-.468.02-.69.058m1.38 0-1.38 0m-1.38 0-1.38 0m0 0a9.004 9.004 0 0 1-8.056-6.68m17.402 0a9.004 9.004 0 0 0-8.056-6.68m0 0c.24 0 .468.02.69.058m0 0c-.24 0-.468.02-.69.058m0 0a9.004 9.004 0 0 0-1.002-3.11m11.102 3.11a9.004 9.004 0 0 1-1.002-3.11m0 0c.24 0 .468.02.69.058M12 21c-.24 0-.468.02-.69.058" />
-                    </svg>
+            <div class="bg-white p-8 rounded-xl shadow-md hover:shadow-xl transition duration-300 text-center group">
+                <div class="flex justify-center mb-6">
+                    <div class="p-4 bg-blue-50 rounded-full group-hover:bg-brand-blue transition duration-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10 text-brand-blue group-hover:text-white transition duration-300">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c.24 0 .468.02.69.058M12 21c-.24 0-.468.02-.69.058m1.38 0-1.38 0m-1.38 0-1.38 0m0 0a9.004 9.004 0 0 1-8.056-6.68m17.402 0a9.004 9.004 0 0 0-8.056-6.68m0 0c.24 0 .468.02.69.058m0 0c-.24 0-.468.02-.69.058m0 0a9.004 9.004 0 0 0-1.002-3.11m11.102 3.11a9.004 9.004 0 0 1-1.002-3.11m0 0c.24 0 .468.02.69.058M12 21c-.24 0-.468.02-.69.058" />
+                        </svg>
+                    </div>
                 </div>
-                <h3 class="text-xl font-bold text-gray-800 mb-2">Giáo viên Bản ngữ</h3>
-                <p class="text-gray-600">Học hỏi từ các giáo viên giàu kinh nghiệm với phát âm chuẩn quốc tế.</p>
+                <h3 class="text-xl font-bold text-gray-800 mb-3">Giáo viên Bản ngữ & Chuyên gia</h3>
+                <p class="text-gray-600">Đội ngũ giảng viên giàu kinh nghiệm, có chứng chỉ giảng dạy quốc tế (TESOL, CELTA).</p>
             </div>
-            <div class="bg-white p-8 rounded-lg shadow-lg text-center">
-                <div class="flex justify-center mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12 text-brand-blue">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
-                    </svg>
+            <div class="bg-white p-8 rounded-xl shadow-md hover:shadow-xl transition duration-300 text-center group">
+                <div class="flex justify-center mb-6">
+                    <div class="p-4 bg-blue-50 rounded-full group-hover:bg-brand-blue transition duration-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10 text-brand-blue group-hover:text-white transition duration-300"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" /></svg>
+                    </div>
                 </div>
-                <h3 class="text-xl font-bold text-gray-800 mb-2">Lộ trình Cá nhân hóa</h3>
-                <p class="text-gray-600">Thiết kế lộ trình học tập riêng biệt phù hợp với mục tiêu và trình độ của bạn.</p>
+                <h3 class="text-xl font-bold text-gray-800 mb-3">Lộ trình Cá nhân hóa</h3>
+                <p class="text-gray-600">Kiểm tra đầu vào miễn phí và tư vấn lộ trình học tập phù hợp nhất với mục tiêu của bạn.</p>
             </div>
-            <div class="bg-white p-8 rounded-lg shadow-lg text-center">
-                <div class="flex justify-center mb-4">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12 text-brand-blue">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.s" />
-                    </svg>
+            <div class="bg-white p-8 rounded-xl shadow-md hover:shadow-xl transition duration-300 text-center group">
+                <div class="flex justify-center mb-6">
+                    <div class="p-4 bg-blue-50 rounded-full group-hover:bg-brand-blue transition duration-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10 text-brand-blue group-hover:text-white transition duration-300"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 12.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" /></svg>
+                    </div>
                 </div>
-                <h3 class="text-xl font-bold text-gray-800 mb-2">Chứng chỉ Quốc tế</h3>
-                <p class="text-gray-600">Đảm bảo đầu ra với các chứng chỉ được công nhận toàn cầu (IELTS, TOEIC...).</p>
+                <h3 class="text-xl font-bold text-gray-800 mb-3">Cam kết Đầu ra</h3>
+                <p class="text-gray-600">Hỗ trợ học lại miễn phí nếu không đạt kết quả như cam kết ban đầu.</p>
             </div>
         </div>
     </div>
 </section>
 
+
 <section class="py-20 bg-white">
     <div class="container mx-auto px-6">
-        <h2 class="text-3xl font-bold text-center text-gray-800 mb-12">
-            Các khóa học Nổi bật
-        </h2>
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold text-gray-800">Các khóa học Nổi bật</h2>
+            <p class="text-gray-600 mt-2">Chọn khóa học phù hợp và bắt đầu hành trình của bạn</p>
+        </div>
 
-       
         <div class="grid md:grid-cols-3 gap-8">
-
-           
             @if (Model != null && Model.Any())
             {
                 @foreach (var course in Model)
                 {
-                    <div class="bg-gray-50 rounded-lg shadow-lg overflow-hidden">
-                        <img src="@course.ImageUrl" alt="Ảnh bìa khóa học @course.Title" class="w-full h-48 object-cover">
-                        <div class="p-6">
-                            <h3 class="text-xl font-bold text-brand-blue mb-2">@course.Title</h3>
+                    <div class="bg-white rounded-2xl shadow-md hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 flex flex-col h-full group">
+                        <div class="relative h-56 overflow-hidden">
+                            <img src="@course.ImageUrl" alt="Ảnh bìa khóa học @course.Title"
+                                 class="w-full h-full object-cover transform group-hover:scale-110 transition duration-500"
+                                 onerror="this.src='https://placehold.co/600x400?text=No+Image'">
+                            <div class="absolute top-4 right-4 bg-brand-yellow text-brand-blue text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-sm">
+                                @course.Category
+                            </div>
+                        </div>
+                        <div class="p-6 flex flex-col flex-grow">
+                            <h3 class="text-xl font-bold text-gray-800 mb-2 group-hover:text-brand-blue transition">@course.Title</h3>
 
                             @if (!string.IsNullOrEmpty(course.Description))
                             {
-                                <p class="text-gray-600 mb-4">@course.Description.Substring(0, Math.Min(course.Description.Length, 100))...</p>
+                                <p class="text-gray-600 mb-4 flex-grow line-clamp-3">@course.Description</p>
                             }
                             else
                             {
-                                <p class="text-gray-600 mb-4">Chưa có mô tả cho khóa học này.</p>
+                                <p class="text-gray-400 mb-4 flex-grow italic">Chưa có mô tả.</p>
                             }
-                            <a asp-controller="Courses" asp-action="Details" asp-route-id="@course.Id" class="font-medium text-brand-blue hover:text-blue-700">
-                                Xem chi tiết &rarr;
-                            </a>
+
+                            <div class="mt-auto pt-4 border-t border-gray-100 flex justify-between items-center">
+                                <div>
+                                    <span class="text-gray-500 text-sm">Học phí:</span>
+                                    <span class="block text-brand-blue font-bold text-lg">@course.Price.ToString("N0") đ</span>
+                                </div>
+                                <a asp-controller="Courses" asp-action="Details" asp-route-id="@course.Id"
+                                   class="inline-flex items-center text-brand-blue font-semibold hover:underline">
+                                    Xem chi tiết
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 ml-1"><path fill-rule="evenodd" d="M3 10a.75.75 0 0 1 .75-.75h10.638L10.23 5.29a.75.75 0 1 1 1.04-1.08l5.5 5.25a.75.75 0 0 1 0 1.08l-5.5 5.25a.75.75 0 1 1-1.04-1.08l4.158-3.96H3.75A.75.75 0 0 1 3 10Z" clip-rule="evenodd" /></svg>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 }
             }
             else
             {
-                <p class="text-center col-span-3 text-gray-600">Hiện chưa có khóa học nổi bật nào.</p>
+                <div class="col-span-3 text-center py-12 bg-gray-50 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12 mx-auto text-gray-400 mb-4"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" /></svg>
+                    <p class="text-gray-600">Hiện chưa có khóa học nổi bật nào.</p>
+                </div>
             }
+        </div>
+    </div>
+</section>
+
+<section class="py-20 bg-gray-50">
+    <div class="container mx-auto px-6">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl font-bold text-gray-800">Người Truyền Lửa</h2>
+            <p class="text-gray-600 mt-2">Gặp gỡ những người thầy tâm huyết tại E-Center</p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-10">
+
+            @* --- GIÁO VIÊN 1: LONG --- *@
+            <div class="bg-white p-8 rounded-2xl shadow-lg text-center hover:-translate-y-2 transition duration-300 border-b-4 border-brand-blue">
+                <div class="w-32 h-32 mx-auto mb-6 rounded-full overflow-hidden border-4 border-brand-blue p-1">
+                    <img src="~/images/teachers/long.jpg" alt="Thầy Long" class="w-full h-full object-cover rounded-full"
+                         onerror="this.src='https://placehold.co/150?text=Long'">
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-1">Thầy Lý Ngọc Long</h3>
+                <p class="text-sm text-brand-blue font-semibold mb-4">Founder & IELTS Expert</p>
+                <blockquote class="text-gray-600 italic">
+                    "Không có học sinh dốt, chỉ có phương pháp chưa phù hợp. Tại đây, chúng tôi đánh thức tiềm năng ngôn ngữ trong bạn."
+                </blockquote>
+            </div>
+
+            @* --- GIÁO VIÊN 2: LƯƠNG --- *@
+            <div class="bg-white p-8 rounded-2xl shadow-lg text-center hover:-translate-y-2 transition duration-300 border-b-4 border-brand-yellow">
+                <div class="w-32 h-32 mx-auto mb-6 rounded-full overflow-hidden border-4 border-brand-yellow p-1">
+                    <img src="~/images/teachers/luong.jpg" alt="Thầy Lương" class="w-full h-full object-cover rounded-full"
+                         onerror="this.src='https://placehold.co/150?text=Luong'">
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-1">Thầy Nguyễn Hữu Lương</h3>
+                <p class="text-sm text-yellow-600 font-semibold mb-4">TOEIC Master</p>
+                <blockquote class="text-gray-600 italic">
+                    "Tiếng Anh không phải là đích đến, nó là cây cầu. Hãy để tôi giúp bạn xây cây cầu vững chắc nhất."
+                </blockquote>
+            </div>
+
+            @* --- GIÁO VIÊN 3: DIỄM --- *@
+            <div class="bg-white p-8 rounded-2xl shadow-lg text-center hover:-translate-y-2 transition duration-300 border-b-4 border-brand-blue">
+                <div class="w-32 h-32 mx-auto mb-6 rounded-full overflow-hidden border-4 border-brand-blue p-1">
+                    <img src="~/images/teachers/diem.jpg" alt="Cô Diễm" class="w-full h-full object-cover rounded-full"
+                         onerror="this.src='https://placehold.co/150?text=Diem'">
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-1">Cô Nguyễn Văn Diễm</h3>
+                <p class="text-sm text-brand-blue font-semibold mb-4">Communication Coach</p>
+                <blockquote class="text-gray-600 italic">
+                    "Tự tin nói sai còn hơn im lặng đúng. Sai ở lớp để đúng ở đời. Speak out loud!"
+                </blockquote>
+            </div>
 
         </div>
     </div>
 </section>
 
-<section class="bg-brand-blue">
-    <div class="container mx-auto px-6 py-16 text-center">
-        <h2 class="text-3xl font-bold text-white mb-4">
-            Sẵn sàng để Bắt đầu?
+
+<section class="py-20 bg-white">
+    <div class="container mx-auto px-6">
+        <h2 class="text-3xl font-bold text-center text-gray-800 mb-16">Học viên nói gì về chúng tôi?</h2>
+
+        <div class="grid md:grid-cols-2 gap-8">
+
+            @* Review 1 *@
+            <div class="bg-gray-50 p-8 rounded-2xl flex gap-6 items-start shadow-sm hover:shadow-md transition">
+                <div class="flex-shrink-0">
+                    <img src="~/images/students/student1.jpg" class="w-16 h-16 rounded-full object-cover shadow-sm"
+                         onerror="this.src='https://placehold.co/100?text=HV1'">
+                </div>
+                <div>
+                    <div class="flex text-brand-yellow mb-2">
+                        ★★★★★
+                    </div>
+                    <p class="text-gray-600 italic mb-4">
+                        "Khóa học IELTS của thầy Long thực sự thay đổi tư duy của mình. Từ một người mất gốc, mình đã đạt 6.5 chỉ sau 4 tháng."
+                    </p>
+                    <h4 class="font-bold text-gray-900">Bạn Trần Minh Tú</h4>
+                    <span class="text-xs text-gray-500">Học viên lớp IELTS-K12</span>
+                </div>
+            </div>
+
+            @* Review 2 *@
+            <div class="bg-gray-50 p-8 rounded-2xl flex gap-6 items-start shadow-sm hover:shadow-md transition">
+                <div class="flex-shrink-0">
+                    <img src="~/images/students/student2.jpg" class="w-16 h-16 rounded-full object-cover shadow-sm"
+                         onerror="this.src='https://placehold.co/100?text=HV2'">
+                </div>
+                <div>
+                    <div class="flex text-brand-yellow mb-2">
+                        ★★★★★
+                    </div>
+                    <p class="text-gray-600 italic mb-4">
+                        "Môi trường học cực kỳ năng động. Cô Diễm sửa phát âm rất kỹ. Giờ mình có thể tự tin phỏng vấn xin việc bằng tiếng Anh."
+                    </p>
+                    <h4 class="font-bold text-gray-900">Bạn Lê Hoàng Nam</h4>
+                    <span class="text-xs text-gray-500">Học viên lớp Giao Tiếp Pro</span>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<section class="relative py-20 bg-brand-blue overflow-hidden">
+    <div class="absolute inset-0 overflow-hidden opacity-10">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-full h-full" viewBox="0 0 800 800"><circle cx="400" cy="400" r="600" fill="white" /></svg>
+    </div>
+    <div class="container relative mx-auto px-6 text-center z-10">
+        <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">
+            Sẵn sàng để Bắt đầu hành trình?
         </h2>
-        <p class="text-lg text-gray-200 mb-8">
-            Đăng ký kiểm tra trình độ miễn phí ngay hôm nay để nhận lộ trình học tập cho riêng bạn.
+        <p class="text-lg text-blue-100 mb-10 max-w-2xl mx-auto">
+            Đừng để khả năng tiếng Anh giới hạn cơ hội của bạn. Đăng ký kiểm tra trình độ miễn phí ngay hôm nay!
         </p>
         <a asp-controller="Home" asp-action="Contact" asp-route-subject="Kiểm tra trình độ"
-           class="bg-brand-yellow text-brand-blue px-8 py-3 rounded-full font-bold text-lg shadow-lg hover:bg-yellow-400 transition duration-300">
-            Đăng ký Kiểm tra Trình độ
+           class="inline-block bg-brand-yellow text-brand-blue px-10 py-4 rounded-full font-bold text-lg shadow-xl hover:bg-white hover:scale-105 transition transform duration-300">
+            Đăng ký Kiểm tra ngay
         </a>
     </div>
 </section>

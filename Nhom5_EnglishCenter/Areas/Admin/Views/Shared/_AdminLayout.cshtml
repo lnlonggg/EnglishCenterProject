@@ -1,25 +1,24 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Admin Dashboard</title>
+    <title>@ViewData["Title"] - Admin Portal</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     fontFamily: {
-                        'sans': ['Be Vietnam Pro', 'sans-serif'],
+                        sans: ['Inter', 'sans-serif'],
                     },
                     colors: {
-                        'brand-blue': '#004A99',
-                        'brand-yellow': '#FFD700',
+                        sidebar: '#1e293b', // Slate 800
+                        sidebarHover: '#334155', // Slate 700
+                        brand: '#3b82f6', // Blue 500
                     }
                 }
             }
@@ -27,52 +26,99 @@
     </script>
     <style>
         body {
-            font-family: 'Be Vietnam Pro', sans-serif;
-        }
-    </style>
+            font-family: 'Inter', sans-serif;
+        }</style>
 </head>
-<body class="bg-gray-100">
+<body class="bg-gray-50 text-gray-800">
 
-    <div class="flex min-h-screen">
+    <div class="flex h-screen overflow-hidden">
 
-        <div class="w-64 bg-gray-800 text-white p-6 flex flex-col">
-            <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="text-2xl font-bold mb-8 hover:text-gray-300">
-                Admin Dashboard
-            </a>
-            <nav class="flex flex-col space-y-3">
+        @* --- SIDEBAR --- *@
+        <aside class="w-64 bg-sidebar text-white flex flex-col shadow-2xl transition-all duration-300">
+            @* Logo *@
+            <div class="h-16 flex items-center justify-center border-b border-gray-700 bg-gray-900">
+                <h1 class="text-xl font-bold tracking-wider uppercase text-blue-400">E-Center <span class="text-white text-sm font-normal">Admin</span></h1>
+            </div>
 
-                <a asp-area="Admin" asp-controller="Courses" asp-action="Index"
-                   class="px-4 py-2 rounded-lg hover:bg-gray-700">
-                    Quản lý Khóa học
-                </a>
+            @* Menu *@
+            <nav class="flex-1 overflow-y-auto py-4">
+                <ul class="space-y-1 px-3">
 
-                <a asp-area="Admin" asp-controller="Teachers" asp-action="Index"
-                   class="px-4 py-2 rounded-lg hover:bg-gray-700">
-                    Quản lý Giáo viên
-                </a>
+                    @* Dashboard *@
+                    <li>
+                        <a asp-area="Admin" asp-controller="Home" asp-action="Index"
+                           class="flex items-center px-4 py-3 rounded-lg transition-colors duration-200 @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "bg-brand text-white" : "text-gray-300 hover:bg-sidebarHover hover:text-white")">
+                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                            <span class="font-medium">Tổng quan</span>
+                        </a>
+                    </li>
 
-                <a asp-area="Admin" asp-controller="Classes" asp-action="Index"
-                   class="px-4 py-2 rounded-lg hover:bg-gray-700">
-                    Quản lý Lớp học
-                </a>
-                <a asp-area="Admin" asp-controller="Contacts" asp-action="Index"
-                   class="px-4 py-2 rounded-lg hover:bg-gray-700">
-                    Hộp thư Liên hệ
-                </a>
+                    @* Nhóm Quản lý *@
+                    <li class="pt-4 pb-2 px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Quản lý Đào tạo</li>
+
+                    <li>
+                        <a asp-area="Admin" asp-controller="Courses" asp-action="Index"
+                           class="flex items-center px-4 py-3 rounded-lg transition-colors duration-200 @(ViewContext.RouteData.Values["controller"]?.ToString() == "Courses" ? "bg-brand text-white" : "text-gray-300 hover:bg-sidebarHover hover:text-white")">
+                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                            <span>Khóa học</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-area="Admin" asp-controller="Classes" asp-action="Index"
+                           class="flex items-center px-4 py-3 rounded-lg transition-colors duration-200 @(ViewContext.RouteData.Values["controller"]?.ToString() == "Classes" ? "bg-brand text-white" : "text-gray-300 hover:bg-sidebarHover hover:text-white")">
+                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                            <span>Lớp học</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-area="Admin" asp-controller="Teachers" asp-action="Index"
+                           class="flex items-center px-4 py-3 rounded-lg transition-colors duration-200 @(ViewContext.RouteData.Values["controller"]?.ToString() == "Teachers" ? "bg-brand text-white" : "text-gray-300 hover:bg-sidebarHover hover:text-white")">
+                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                            <span>Giáo viên</span>
+                        </a>
+                    </li>
+
+                    @* Nhóm Khác *@
+                    <li class="pt-4 pb-2 px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">Hệ thống</li>
+
+                    <li>
+                        <a asp-area="Admin" asp-controller="Contacts" asp-action="Index"
+                           class="flex items-center px-4 py-3 rounded-lg transition-colors duration-200 @(ViewContext.RouteData.Values["controller"]?.ToString() == "Contacts" ? "bg-brand text-white" : "text-gray-300 hover:bg-sidebarHover hover:text-white")">
+                            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                            <span>Hộp thư Liên hệ</span>
+                        </a>
+                    </li>
+                </ul>
             </nav>
 
-            <div class="mt-auto">
+            @* Footer Sidebar *@
+            <div class="p-4 border-t border-gray-700">
                 <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post">
-                    <button type="submit"
-                            class="w-full text-left px-4 py-2 rounded-lg text-gray-400 hover:bg-gray-700 hover:text-white transition duration-300">
-                        &larr; Đăng xuất
+                    <button type="submit" class="flex items-center w-full px-4 py-2 text-red-400 hover:bg-gray-800 hover:text-red-300 rounded-lg transition-colors">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                        Đăng xuất
                     </button>
                 </form>
             </div>
-        </div>
+        </aside>
 
-        <div class="flex-1 p-10">
-            <main role="main">
+        @* --- MAIN CONTENT --- *@
+        <div class="flex-1 flex flex-col overflow-hidden">
+            @* Topbar *@
+            <header class="h-16 bg-white shadow-sm flex items-center justify-between px-6 z-10">
+                <div class="text-lg font-semibold text-gray-700">
+                    @ViewData["Title"]
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span class="text-sm text-gray-600">Xin chào, <strong>@User.Identity.Name</strong></span>
+                    <div class="h-8 w-8 bg-brand rounded-full flex items-center justify-center text-white font-bold">
+                        @User.Identity.Name.Substring(0, 1).ToUpper()
+                    </div>
+                </div>
+            </header>
+
+            @* Page Content *@
+            <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 p-6">
                 @RenderBody()
             </main>
         </div>

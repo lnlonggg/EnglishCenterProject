@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using TrungTamAnhNgu.Web.Models;
 
 namespace TrungTamAnhNgu.Web.ViewModels
 {
@@ -19,8 +21,11 @@ namespace TrungTamAnhNgu.Web.ViewModels
         [Display(Name = "Tổng số Lượt Ghi danh")]
         public int TotalEnrollments { get; set; }
 
-        [Display(Name = "Tổng Doanh thu (Đã thanh toán)")]
+        [Display(Name = "Tổng Doanh thu")]
         [DataType(DataType.Currency)]
         public decimal TotalRevenue { get; set; }
+
+        // --- THÊM MỚI: Danh sách các lớp cần chú ý (Thiếu học viên / Quá hạn) ---
+        public List<Class> AttentionClasses { get; set; } = new List<Class>();
     }
 }
