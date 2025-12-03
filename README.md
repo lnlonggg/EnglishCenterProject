@@ -80,9 +80,9 @@ Hệ thống mang đến môi trường tích hợp cho học viên, giảng vi�
 
 | Student ID | Full Name / Họ và tên | Class / Lớp | Role / Vai trò | Tasks / Nhiệm vụ |
 |-------------|------------------------|--------------|----------------|------------------|
-| 22103100235 | **Lý Ngọc Long** | DHTI16A4HN | Team Leader / Nhóm trưởng | — |
-| 22103100214 | **Nguyễn Hữu Lương** | DHTI16A4HN | Member / Thành viên | — |
-| 22103100217 | **Nguyễn Văn Diễm** | DHTI16A4HN | Member / Thành viên | — |
+| 22103100235 | **Lý Ngọc Long** | DHTI16A4HN | Team Leader / Nhóm trưởng | 1. Viết đặc tả Use-case. 2. Hoàn thiện code CRUD và nâng cấp hệ thống về các rằng buộc logic giữa Giáo viên, Thời khóa biểu, Khóa học, Lớp học, học viên. 3. Testing: Chạy thử và viết kịch bản test cho luồng Admin |
+| 22103100214 | **Nguyễn Hữu Lương** | DHTI16A4HN | Member / Thành viên |1. Vẽ các sơ đồ luồng chức năng. 2. Hoàn thiện code CRUD3. Testing: Chạy thử và viết kịch bản test cho luồng Học viên (Student Flow).|
+| 22103100217 | **Nguyễn Văn Diễm** | DHTI16A4HN | Member / Thành viên |1. Lên ý tưởng và vẽ sơ đồ thực thể và mối quan hệ giữa các thực thể. 2. Hoàn thiện Database, Seed dữ liệu. Code Giao diện mẫu chính. 3. Testing: Chạy thử và viết kịch bản test Giáo viên.|
 
 ---
 
