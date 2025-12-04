@@ -1,88 +1,94 @@
 ﻿using TrungTamAnhNgu.Web.Models;
 using TrungTamAnhNgu.Web.ViewModels;
+using System.Text.RegularExpressions;
 
 namespace TrungTamAnhNgu.Web.Helpers
 {
     public static class ScheduleHelper
     {
+        // Cấu trúc mới để lưu 1 slot học
+        public class ClassSlot
+        {
+            public string Day { get; set; } // T2, T3...
+            public int Shift { get; set; }  // 1, 2, 3, 4
+        }
+
+        // Hàm phân tích chuỗi mới: "T2 (Ca 1, Ca 2); T4 (Ca 1)"
+        public static List<ClassSlot> ParseString(string scheduleStr)
+        {
+            var list = new List<ClassSlot>();
+            if (string.IsNullOrEmpty(scheduleStr)) return list;
+
+            // Tách theo dấu chấm phẩy để lấy từng ngày: ["T2 (Ca 1, Ca 2)", "T4 (Ca 1)"]
+            var dayParts = scheduleStr.Split(';');
+
+            foreach (var part in dayParts)
+            {
+                // Dùng Regex để bóc tách: "T2" và "1, 2"
+                // Pattern: Lấy chữ cái đầu (Day) và nội dung trong ngoặc (Shifts)
+                var match = Regex.Match(part.Trim(), @"^(T\d|CN)\s*\((.*)\)$");
+                if (match.Success)
+                {
+                    string day = match.Groups[1].Value;
+                    string shiftsStr = match.Groups[2].Value; // "Ca 1, Ca 2"
+
+                    var shifts = shiftsStr.Split(',');
+                    foreach (var s in shifts)
+                    {
+                        // Lấy số từ "Ca 1"
+                        var numberMatch = Regex.Match(s, @"\d+");
+                        if (numberMatch.Success)
+                        {
+                            list.Add(new ClassSlot { Day = day, Shift = int.Parse(numberMatch.Value) });
+                        }
+                    }
+                }
+            }
+            return list;
+        }
+
         public static TimetableViewModel ParseForWeek(IEnumerable<Class> classes, DateTime targetDate)
         {
             var model = new TimetableViewModel();
 
-            // 1. Xác định ngày đầu tuần (Thứ 2) và cuối tuần (CN) của tuần targetDate
+            // Xác định ngày đầu tuần
             int diff = (7 + (targetDate.DayOfWeek - DayOfWeek.Monday)) % 7;
             model.StartOfWeek = targetDate.Date.AddDays(-1 * diff);
             model.EndOfWeek = model.StartOfWeek.AddDays(6);
 
-            // 2. Duyệt từng ngày trong tuần đó (0=Thứ 2, ..., 6=CN)
             for (int dayIndex = 0; dayIndex < 7; dayIndex++)
             {
                 DateTime currentDayDate = model.StartOfWeek.AddDays(dayIndex);
-
-                // Chuyển DayIndex sang string trong DB (T2, T3...)
-                string dayCode = GetDayCode(dayIndex);
+                string dayCode = dayIndex == 6 ? "CN" : $"T{dayIndex + 2}";
 
                 foreach (var lop in classes)
                 {
-                    // KIỂM TRA 1: Lớp này có hoạt động vào ngày này không?
-                    // (Phải nằm trong khoảng StartDate và EndDate)
-                    if (currentDayDate < lop.StartDate || currentDayDate > lop.EndDate)
+                    if (currentDayDate < lop.StartDate || currentDayDate > lop.EndDate) continue;
+
+                    // Phân tích lịch học linh hoạt
+                    var slots = ParseString(lop.Schedule);
+
+                    // Kiểm tra xem lớp này có slot nào trùng với ngày (dayCode) hiện tại không
+                    foreach (var slot in slots)
                     {
-                        continue; // Lớp chưa mở hoặc đã đóng vào ngày này
-                    }
-
-                    // KIỂM TRA 2: Lớp này có lịch vào thứ này không?
-                    if (string.IsNullOrEmpty(lop.Schedule)) continue;
-                    var parts = lop.Schedule.Split('|');
-                    if (parts.Length < 2) continue;
-
-                    var daysPart = parts[0].Trim(); // "T2, T4"
-                    if (!daysPart.Contains(dayCode))
-                    {
-                        continue; // Lớp này không học vào thứ này
-                    }
-
-                    // 3. Xác định Ca
-                    string shiftPart = parts[1].Trim();
-                    int shiftIndex = GetShiftIndex(shiftPart);
-
-                    if (shiftIndex != -1)
-                    {
-                        model.Grid[shiftIndex, dayIndex].Add(new ClassSession
+                        if (slot.Day == dayCode)
                         {
-                            ClassInfo = lop,
-                            Date = currentDayDate,
-                            ShiftIndex = shiftIndex
-                        });
+                            // Shift 1 -> Index 0
+                            int shiftIdx = slot.Shift - 1;
+                            if (shiftIdx >= 0 && shiftIdx < 4)
+                            {
+                                model.Grid[shiftIdx, dayIndex].Add(new ClassSession
+                                {
+                                    ClassInfo = lop,
+                                    Date = currentDayDate,
+                                    ShiftIndex = shiftIdx
+                                });
+                            }
+                        }
                     }
                 }
             }
-
             return model;
-        }
-
-        private static string GetDayCode(int index)
-        {
-            return index switch
-            {
-                0 => "T2",
-                1 => "T3",
-                2 => "T4",
-                3 => "T5",
-                4 => "T6",
-                5 => "T7",
-                6 => "CN",
-                _ => ""
-            };
-        }
-
-        private static int GetShiftIndex(string shiftPart)
-        {
-            if (shiftPart.StartsWith("Ca 1")) return 0;
-            if (shiftPart.StartsWith("Ca 2")) return 1;
-            if (shiftPart.StartsWith("Ca 3")) return 2;
-            if (shiftPart.StartsWith("Ca 4")) return 3;
-            return -1;
         }
     }
 }

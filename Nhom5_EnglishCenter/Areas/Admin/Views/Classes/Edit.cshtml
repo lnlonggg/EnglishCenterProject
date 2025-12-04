@@ -1,181 +1,200 @@
 ﻿@model TrungTamAnhNgu.Web.ViewModels.ClassViewModel
-@using TrungTamAnhNgu.Web.Models
-
 @{
     ViewData["Title"] = "Chỉnh sửa Lớp học";
 }
 
 <h1 class="text-3xl font-bold text-gray-800 mb-6">@ViewData["Title"]</h1>
 
-<div class="bg-white shadow-md rounded-lg p-8 max-w-2xl">
+<div class="bg-white shadow-md rounded-lg p-8 max-w-4xl">
     <form asp-action="Edit">
         <div asp-validation-summary="ModelOnly" class="text-red-600 text-sm mb-4" role="alert"></div>
         <input type="hidden" asp-for="Id" />
 
-        <div class="mb-4">
-            <label asp-for="ClassName" class="block text-sm font-medium text-gray-700"></label>
-            <input asp-for="ClassName" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-blue focus:ring-brand-blue sm:text-sm" />
-            <span asp-validation-for="ClassName" class="text-red-600 text-sm"></span>
-        </div>
-
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
             <div>
-                <label asp-for="CourseId" class="block text-sm font-medium text-gray-700"></label>
-                <select asp-for="CourseId" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-blue focus:ring-brand-blue sm:text-sm" asp-items="ViewBag.CourseId"></select>
+                <label asp-for="ClassName" class="block text-sm font-medium text-gray-700 mb-1"></label>
+                <input asp-for="ClassName" class="w-full rounded-md border-gray-300 shadow-sm focus:border-brand-blue focus:ring-brand-blue sm:text-sm" />
+                <span asp-validation-for="ClassName" class="text-red-600 text-sm"></span>
             </div>
             <div>
-                <label asp-for="TeacherId" class="block text-sm font-medium text-gray-700"></label>
-                <select asp-for="TeacherId" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-blue focus:ring-brand-blue sm:text-sm" asp-items="ViewBag.TeacherId"></select>
+                <label asp-for="CourseId" class="block text-sm font-medium text-gray-700 mb-1"></label>
+                <select asp-for="CourseId" class="w-full rounded-md border-gray-300 shadow-sm focus:border-brand-blue focus:ring-brand-blue sm:text-sm" asp-items="ViewBag.CourseId"></select>
             </div>
         </div>
 
-        @* --- BẮT ĐẦU: GIAO DIỆN CHỌN LỊCH HỌC (EDIT) --- *@
-        <div class="mb-6 bg-gray-50 p-4 rounded-lg border border-gray-200">
-            <label class="block text-sm font-bold text-gray-700 mb-2">Lịch học</label>
+        <div class="mb-4">
+            <label asp-for="TeacherId" class="block text-sm font-medium text-gray-700 mb-1"></label>
+            <select asp-for="TeacherId" class="w-full rounded-md border-gray-300 shadow-sm focus:border-brand-blue focus:ring-brand-blue sm:text-sm" asp-items="ViewBag.TeacherId"></select>
+        </div>
 
+        @* --- GIAO DIỆN CHỌN LỊCH (MA TRẬN) --- *@
+        <div class="mb-6 bg-blue-50 p-5 rounded-lg border border-blue-100">
+            <label class="block text-sm font-bold text-brand-blue mb-3">Thời khóa biểu chi tiết</label>
             <input asp-for="Schedule" type="hidden" id="ScheduleInput" />
             <span asp-validation-for="Schedule" class="text-red-600 text-sm"></span>
 
-            @* Chọn Thứ *@
-            <div class="mb-3">
-                <span class="text-xs font-semibold text-gray-500 uppercase">Thứ:</span>
-                <div class="flex flex-wrap gap-3 mt-2">
-                    @foreach (var day in new[] { "T2", "T3", "T4", "T5", "T6", "T7", "CN" })
-                    {
-                        <label class="inline-flex items-center cursor-pointer">
-                            <input type="checkbox" value="@day" class="schedule-day form-checkbox h-5 w-5 text-brand-blue rounded border-gray-300" />
-                            <span class="ml-2 text-sm text-gray-700">@day</span>
-                        </label>
-                    }
-                </div>
+            <div class="overflow-x-auto bg-white rounded border border-gray-200">
+                <table class="min-w-full text-sm">
+                    <thead>
+                        <tr class="bg-gray-100 border-b">
+                            <th class="p-2 text-center w-24 text-gray-500 font-medium border-r">Ca / Thứ</th>
+                            @foreach (var day in new[] { "T2", "T3", "T4", "T5", "T6", "T7", "CN" })
+                            {
+                                <th class="p-2 text-center font-bold text-gray-700 border-r">@day</th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            var shifts = new Dictionary<int, string> { { 1, "08:00-10:00" }, { 2, "10:00-12:00" }, { 3, "13:30-15:30" }, { 4, "17:30-19:30" } };
+                        }
+                        @foreach (var shift in shifts)
+                        {
+                            <tr class="border-b last:border-0 hover:bg-gray-50">
+                                <td class="p-2 text-center bg-gray-50 border-r">
+                                    <span class="block font-bold text-brand-blue">Ca @shift.Key</span>
+                                    <span class="text-xs text-gray-500">@shift.Value</span>
+                                </td>
+                                @foreach (var day in new[] { "T2", "T3", "T4", "T5", "T6", "T7", "CN" })
+                                {
+                                    <td class="p-2 text-center border-r cursor-pointer hover:bg-blue-100 transition"
+                                        onclick="document.getElementById('cb_@day@shift.Key').click()">
+                                        <input type="checkbox" id="cb_@day@shift.Key"
+                                               data-day="@day" data-shift="@shift.Key"
+                                               class="schedule-checkbox w-5 h-5 text-brand-blue rounded border-gray-300 focus:ring-brand-blue cursor-pointer"
+                                               onclick="event.stopPropagation()" />
+                                    </td>
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                </table>
             </div>
 
-            @* Chọn Ca *@
-            <div>
-                <span class="text-xs font-semibold text-gray-500 uppercase">Ca học:</span>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
-                    @{
-                        var shifts = new Dictionary<string, string>
-                                        {
-                                        { "Ca 1", "08:00 - 10:00" },
-                                        { "Ca 2", "10:00 - 12:00" },
-                                        { "Ca 3", "13:30 - 15:30" },
-                                        { "Ca 4", "17:30 - 19:30" }
-                                        };
-                    }
-                    @foreach (var shift in shifts)
-                    {
-                        <label class="inline-flex items-center p-2 border rounded-md cursor-pointer hover:bg-white transition">
-                            <input type="radio" name="shiftSelection" value="@shift.Key (@shift.Value)" class="schedule-shift form-radio h-4 w-4 text-brand-blue border-gray-300" />
-                            <span class="ml-2 text-sm text-gray-700">
-                                <strong>@shift.Key</strong> <span class="text-xs text-gray-500">(@shift.Value)</span>
-                            </span>
-                        </label>
-                    }
-                </div>
-            </div>
-
-            <div class="mt-3 p-2 bg-blue-50 rounded text-sm text-brand-blue">
-                <strong>Hiện tại: </strong> <span id="schedulePreview">@Model.Schedule</span>
+            <div class="mt-3 text-sm">
+                <span class="text-gray-500">Đang chọn: </span>
+                <span id="schedulePreview" class="font-bold text-brand-blue">@Model.Schedule</span>
             </div>
         </div>
-
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                const days = document.querySelectorAll('.schedule-day');
-                const shifts = document.querySelectorAll('.schedule-shift');
-                const input = document.getElementById('ScheduleInput');
-                const preview = document.getElementById('schedulePreview');
-
-                // --- LOGIC KHÔI PHỤC DỮ LIỆU CŨ ---
-                const currentSchedule = input.value; // Ví dụ: "T2, T4 | Ca 1 (08:00 - 10:00)"
-
-                if (currentSchedule) {
-                    // 1. Check các thứ
-                    days.forEach(cb => {
-                        if (currentSchedule.includes(cb.value)) cb.checked = true;
-                    });
-                    // 2. Check ca (so sánh chuỗi)
-                    shifts.forEach(rb => {
-                        if (currentSchedule.includes(rb.value)) rb.checked = true;
-                    });
-                }
-                // ----------------------------------
-
-                function updateSchedule() {
-                    const selectedDays = Array.from(days).filter(cb => cb.checked).map(cb => cb.value).join(', ');
-                    let selectedShift = '';
-                    shifts.forEach(rb => { if (rb.checked) selectedShift = rb.value; });
-
-                    if (selectedDays && selectedShift) {
-                        const result = `${selectedDays} | ${selectedShift}`;
-                        input.value = result;
-                        preview.textContent = result;
-                    }
-                }
-
-                days.forEach(cb => cb.addEventListener('change', updateSchedule));
-                shifts.forEach(rb => rb.addEventListener('change', updateSchedule));
-            });
-        </script>
-        @* --- KẾT THÚC --- *@
+        @* -------------------------------------- *@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
             <div>
-                <label asp-for="StartDate" class="block text-sm font-medium text-gray-700"></label>
-                <input asp-for="StartDate" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-blue focus:ring-brand-blue sm:text-sm" />
-                <span asp-validation-for="StartDate" class="text-red-600 text-sm"></span>
+                <label asp-for="StartDate" class="block text-sm font-medium text-gray-700 mb-1"></label>
+                <input asp-for="StartDate" class="w-full rounded-md border-gray-300 shadow-sm focus:border-brand-blue focus:ring-brand-blue sm:text-sm" />
             </div>
             <div>
-                <label asp-for="EndDate" class="block text-sm font-medium text-gray-700"></label>
-                <input asp-for="EndDate" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-blue focus:ring-brand-blue sm:text-sm" />
-                <span asp-validation-for="EndDate" class="text-red-600 text-sm"></span>
+                <label asp-for="EndDate" class="block text-sm font-medium text-gray-700 mb-1"></label>
+                <input asp-for="EndDate" class="w-full rounded-md border-gray-300 shadow-sm focus:border-brand-blue focus:ring-brand-blue sm:text-sm" />
             </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
             <div>
-                <label asp-for="MinStudents" class="block text-sm font-medium text-gray-700"></label>
-                <input asp-for="MinStudents" type="number" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-blue focus:ring-brand-blue sm:text-sm" />
-                <span asp-validation-for="MinStudents" class="text-red-600 text-sm"></span>
+                <label asp-for="MinStudents" class="block text-sm font-medium text-gray-700 mb-1"></label>
+                <input asp-for="MinStudents" type="number" class="w-full rounded-md border-gray-300 shadow-sm focus:border-brand-blue focus:ring-brand-blue sm:text-sm" />
             </div>
             <div>
-                <label asp-for="MaxStudents" class="block text-sm font-medium text-gray-700"></label>
-                <input asp-for="MaxStudents" type="number" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-blue focus:ring-brand-blue sm:text-sm" />
-                <span asp-validation-for="MaxStudents" class="text-red-600 text-sm"></span>
+                <label asp-for="MaxStudents" class="block text-sm font-medium text-gray-700 mb-1"></label>
+                <input asp-for="MaxStudents" type="number" class="w-full rounded-md border-gray-300 shadow-sm focus:border-brand-blue focus:ring-brand-blue sm:text-sm" />
             </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
             <div>
-                <label asp-for="Format" class="block text-sm font-medium text-gray-700"></label>
-                <select asp-for="Format" asp-items="Html.GetEnumSelectList<ClassFormat>()" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-blue focus:ring-brand-blue sm:text-sm"></select>
+                <label asp-for="Format" class="block text-sm font-medium text-gray-700 mb-1"></label>
+                <select asp-for="Format" asp-items="Html.GetEnumSelectList<TrungTamAnhNgu.Web.Models.ClassFormat>()" class="w-full rounded-md border-gray-300 shadow-sm focus:border-brand-blue focus:ring-brand-blue sm:text-sm"></select>
             </div>
             <div>
-                <label asp-for="Status" class="block text-sm font-medium text-gray-700"></label>
-                <select asp-for="Status" asp-items="Html.GetEnumSelectList<ClassStatus>()" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-blue focus:ring-brand-blue sm:text-sm"></select>
-                <span asp-validation-for="Status" class="text-red-600 text-sm"></span>
+                <label asp-for="Status" class="block text-sm font-medium text-gray-700 mb-1"></label>
+                <select asp-for="Status" asp-items="Html.GetEnumSelectList<TrungTamAnhNgu.Web.Models.ClassStatus>()" class="w-full rounded-md border-gray-300 shadow-sm focus:border-brand-blue focus:ring-brand-blue sm:text-sm"></select>
             </div>
         </div>
 
-        <div class="mb-4">
-            <label asp-for="Location" class="block text-sm font-medium text-gray-700"></label>
-            <input asp-for="Location" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-blue focus:ring-brand-blue sm:text-sm" />
-            <span asp-validation-for="Location" class="text-red-600 text-sm"></span>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div>
+                <label asp-for="Location" class="block text-sm font-medium text-gray-700 mb-1"></label>
+                <input asp-for="Location" class="w-full rounded-md border-gray-300 shadow-sm focus:border-brand-blue focus:ring-brand-blue sm:text-sm" placeholder="VD: Phòng 101" />
+            </div>
+            <div>
+                <label asp-for="MeetingUrl" class="block text-sm font-medium text-gray-700 mb-1"></label>
+                <input asp-for="MeetingUrl" class="w-full rounded-md border-gray-300 shadow-sm focus:border-brand-blue focus:ring-brand-blue sm:text-sm" placeholder="VD: zoom.us/..." />
+            </div>
         </div>
 
-        <div class="mb-4">
-            <label asp-for="MeetingUrl" class="block text-sm font-medium text-gray-700"></label>
-            <input asp-for="MeetingUrl" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-brand-blue focus:ring-brand-blue sm:text-sm" />
-            <span asp-validation-for="MeetingUrl" class="text-red-600 text-sm"></span>
-        </div>
-
-        <div class="mt-6 flex items-center space-x-4">
-            <input type="submit" value="Lưu thay đổi" class="px-6 py-2 bg-brand-blue text-white rounded-lg shadow hover:bg-blue-700 transition duration-300 cursor-pointer" />
-            <a asp-action="Index" class="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition duration-300">Quay lại Danh sách</a>
+        <div class="flex items-center space-x-4 pt-4 border-t">
+            <input type="submit" value="Lưu thay đổi" class="px-6 py-2.5 bg-brand-blue text-white font-bold rounded-lg shadow hover:bg-blue-800 transition duration-300 cursor-pointer" />
+            <a asp-action="Index" class="px-6 py-2.5 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition duration-300">Hủy bỏ</a>
         </div>
     </form>
 </div>
+
+@* --- SCRIPT XỬ LÝ LOGIC --- *@
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const checkboxes = document.querySelectorAll('.schedule-checkbox');
+        const input = document.getElementById('ScheduleInput');
+        const preview = document.getElementById('schedulePreview');
+
+        // 1. KHÔI PHỤC TRẠNG THÁI TỪ CHUỖI CŨ (Quan trọng!)
+        // Chuỗi có dạng: "T2 (Ca 1, Ca 2); T4 (Ca 1)"
+        const initialSchedule = input.value;
+        if (initialSchedule) {
+            const parts = initialSchedule.split(';'); // Tách từng ngày
+            parts.forEach(part => {
+                // Part ví dụ: " T2 (Ca 1, Ca 2) "
+                part = part.trim();
+                // Lấy T2
+                const dayMatch = part.match(/^(T\d|CN)/);
+                if (dayMatch) {
+                    const day = dayMatch[0];
+                    // Tìm tất cả số Ca trong ngoặc
+                    const shiftMatches = part.matchAll(/Ca (\d)/g);
+                    for (const match of shiftMatches) {
+                        const shift = match[1];
+                        // Tìm checkbox tương ứng và tick nó
+                        const cb = document.getElementById(`cb_${day}${shift}`);
+                        if (cb) cb.checked = true;
+                    }
+                }
+            });
+        }
+
+        // 2. CẬP NHẬT CHUỖI KHI CHECKBOX THAY ĐỔI
+        function updateSchedule() {
+            let selection = {};
+            checkboxes.forEach(cb => {
+                if (cb.checked) {
+                    let d = cb.getAttribute('data-day');
+                    let s = cb.getAttribute('data-shift');
+                    if (!selection[d]) selection[d] = [];
+                    selection[d].push(s);
+                }
+            });
+
+            let parts = [];
+            const dayOrder = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
+            dayOrder.forEach(day => {
+                if (selection[day]) {
+                    // Sắp xếp ca tăng dần: 1, 2...
+                    let shifts = selection[day].sort((a, b) => a - b).map(s => "Ca " + s).join(", ");
+                    parts.push(`${day} (${shifts})`);
+                }
+            });
+
+            if (parts.length > 0) {
+                let result = parts.join("; ");
+                input.value = result;
+                preview.textContent = result;
+            } else {
+                input.value = '';
+                preview.textContent = 'Chưa chọn';
+            }
+        }
+
+        checkboxes.forEach(cb => cb.addEventListener('change', updateSchedule));
+    });
+</script>
 
 @section Scripts {
     @{

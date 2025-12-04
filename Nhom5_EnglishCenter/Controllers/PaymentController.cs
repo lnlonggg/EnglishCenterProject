@@ -60,30 +60,26 @@ namespace Nhom5_EnglishCenter.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ProcessPayment(int enrollmentId)
+        public async Task<IActionResult> ProcessPayment(int enrollmentId, string paymentMethod)
         {
             var studentProfile = await GetCurrentStudentProfile();
-            if (studentProfile == null)
-            {
-                return Challenge();
-            }
+            if (studentProfile == null) return Challenge();
 
             var enrollment = await _context.Enrollments
                 .Include(e => e.Class.Course)
                 .FirstOrDefaultAsync(e => e.Id == enrollmentId && e.StudentId == studentProfile.Id);
 
-            if (enrollment == null)
-            {
-                return NotFound("Không tìm thấy đơn đăng ký.");
-            }
+            if (enrollment == null) return NotFound();
 
-            enrollment.Status = EnrollmentStatus.Paid;
-            enrollment.PaymentId = $"FAKE_PAYMENT_{Guid.NewGuid()}";
+            enrollment.Status = EnrollmentStatus.Pending;
+
+
+            enrollment.PaymentId = $"{paymentMethod}_{DateTime.Now.Ticks}";
 
             _context.Update(enrollment);
             await _context.SaveChangesAsync();
 
-            TempData["SuccessMessage"] = $"Thanh toán thành công cho lớp {enrollment.Class.Course.Title}!";
+            TempData["SuccessMessage"] = "Yêu cầu thanh toán đã được gửi! Vui lòng chờ Admin xác nhận.";
             return RedirectToAction("Index", "Dashboard");
         }
     }

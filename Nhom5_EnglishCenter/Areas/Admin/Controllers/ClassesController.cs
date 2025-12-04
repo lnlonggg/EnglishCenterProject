@@ -330,5 +330,20 @@ namespace Nhom5_EnglishCenter.Areas.Admin.Controllers
 
             return null;
         }
+
+        // POST: Admin/Classes/ApproveEnrollment/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ApproveEnrollment(int enrollmentId)
+        {
+            var enrollment = await _context.Enrollments.FindAsync(enrollmentId);
+            if (enrollment == null) return NotFound();
+
+            enrollment.Status = EnrollmentStatus.Paid; // Duyệt đơn -> Đã thanh toán
+            _context.Update(enrollment);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Details), new { id = enrollment.ClassId });
+        }
     }
 }

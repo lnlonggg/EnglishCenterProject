@@ -21,6 +21,7 @@ namespace Nhom5_EnglishCenter.Controllers
             var courses = await _courseService.GetAllCoursesAsync();
             if (!string.IsNullOrEmpty(searchString))
             {
+                ViewData["CurrentFilter"] = searchString;
                 searchString = searchString.ToLower();
 
                 courses = courses.Where(c =>

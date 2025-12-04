@@ -1,48 +1,109 @@
 ﻿@model TrungTamAnhNgu.Web.Models.Enrollment
 @{
-    ViewData["Title"] = "Xác nhận Thanh toán";
+    ViewData["Title"] = "Thanh toán";
 }
 
-<div class="bg-white py-24">
+<div class="bg-gray-50 py-12 min-h-screen">
     <div class="container mx-auto px-6">
-        <div class="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-xl">
-            <h1 class="text-3xl font-bold text-center text-brand-blue mb-8">
-                Xác nhận Thanh toán
-            </h1>
+        <div class="max-w-3xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
 
-            <div class="border-b pb-4 mb-4">
-                <h2 class="text-xl font-semibold text-gray-800">Thông tin Khóa học</h2>
-                <p class="text-gray-600">@Model.Class.Course.Title</p>
+            @* --- Header --- *@
+            <div class="bg-brand-blue px-8 py-6 text-white">
+                <h1 class="text-2xl font-bold">Xác nhận Thanh toán</h1>
+                <p class="opacity-90">Hoàn tất thủ tục để tham gia lớp học</p>
             </div>
 
-            <div class="border-b pb-4 mb-4">
-                <h2 class="text-xl font-semibold text-gray-800">Thông tin Lớp học</h2>
-                <p class="text-gray-600">Lớp: @Model.Class.ClassName</p>
-                <p class="text-gray-600">Lịch học: @Model.Class.Schedule</p>
-                <p class="text-gray-600">Ngày khai giảng: @Model.Class.StartDate.ToString("dd/MM/yyyy")</p>
-            </div>
+            <div class="p-8">
+                @* --- Thông tin đơn hàng --- *@
+                <div class="mb-8 border-b border-gray-200 pb-6">
+                    <h2 class="text-lg font-semibold text-gray-800 mb-4">Thông tin đăng ký</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                        <div>
+                            <p class="text-gray-500">Khóa học</p>
+                            <p class="font-medium text-gray-900">@Model.Class.Course.Title</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-500">Lớp học</p>
+                            <p class="font-medium text-gray-900">@Model.Class.ClassName</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-500">Học phí</p>
+                            <p class="text-2xl font-bold text-brand-blue">
+                                @Model.Class.Course.Price.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))
+                            </p>
+                        </div>
+                        <div>
+                            <p class="text-gray-500">Ngày khai giảng</p>
+                            <p class="font-medium text-gray-900">@Model.Class.StartDate.ToString("dd/MM/yyyy")</p>
+                        </div>
+                    </div>
+                </div>
 
-            <div class="border-b pb-4 mb-4">
-                <h2 class="text-xl font-semibold text-gray-800">Học phí</h2>
-                <p class="text-3xl font-bold text-brand-blue">
-                    @Model.Class.Course.Price.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))
-                </p>
-            </div>
+                @* --- Form Thanh toán --- *@
+                <form asp-action="ProcessPayment" method="post" id="paymentForm">
+                    <input type="hidden" name="enrollmentId" value="@Model.Id" />
+                    @Html.AntiForgeryToken()
 
-            <form asp-action="ProcessPayment" method="post">
-                <input type="hidden" name="enrollmentId" value="@Model.Id" />
-                @Html.AntiForgeryToken()
-                <button type="submit"
-                        class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-lg font-medium text-brand-blue bg-brand-yellow hover:bg-yellow-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500">
-                    Xác nhận Thanh toán (Demo)
-                </button>
-            </form>
+                    <h2 class="text-lg font-semibold text-gray-800 mb-4">Chọn hình thức thanh toán</h2>
 
-            <div class="text-center mt-4">
-                <a asp-controller="Dashboard" asp-action="Index" class="text-sm text-gray-600 hover:underline">
-                    Quay lại Dashboard
-                </a>
+                    <div class="space-y-4 mb-8">
+
+                        @* 1. Chuyển khoản QR *@
+                        <label class="flex items-start p-4 border rounded-lg cursor-pointer hover:bg-blue-50 transition border-gray-200 has-[:checked]:border-brand-blue has-[:checked]:bg-blue-50">
+                            <input type="radio" name="paymentMethod" value="QR" class="mt-1 text-brand-blue focus:ring-brand-blue" checked onchange="togglePaymentInfo('qr')">
+                            <div class="ml-3 w-full">
+                                <span class="block font-medium text-gray-900">Chuyển khoản qua mã QR</span>
+                                <span class="block text-sm text-gray-500">Quét mã VietQR bằng ứng dụng ngân hàng</span>
+
+                                @* Khu vực hiển thị ảnh QR *@
+                                <div id="qr-info" class="mt-4 p-4 bg-white rounded border border-gray-200 text-center">
+                                    <p class="text-sm text-gray-600 mb-2">Quét mã bên dưới để thanh toán:</p>
+                                    <img src="~/images/payment/qr-code.jpg" alt="QR Code" class="w-48 h-48 mx-auto object-contain border" />
+                                    <p class="text-xs text-gray-500 mt-2">Nội dung CK: <strong>HOCPHI @Model.Id</strong></p>
+                                </div>
+                            </div>
+                        </label>
+
+                        @* 2. Ví điện tử (Demo) *@
+                        <label class="flex items-start p-4 border rounded-lg cursor-pointer hover:bg-blue-50 transition border-gray-200 has-[:checked]:border-brand-blue has-[:checked]:bg-blue-50">
+                            <input type="radio" name="paymentMethod" value="EWallet" class="mt-1 text-brand-blue focus:ring-brand-blue" onchange="togglePaymentInfo('wallet')">
+                            <div class="ml-3">
+                                <span class="block font-medium text-gray-900">Ví điện tử (Momo / ZaloPay)</span>
+                                <span class="block text-sm text-gray-500">Cổng thanh toán giả lập (Demo)</span>
+                            </div>
+                        </label>
+
+                        @* 3. Thẻ Quốc tế (Demo) *@
+                        <label class="flex items-start p-4 border rounded-lg cursor-pointer hover:bg-blue-50 transition border-gray-200 has-[:checked]:border-brand-blue has-[:checked]:bg-blue-50">
+                            <input type="radio" name="paymentMethod" value="Card" class="mt-1 text-brand-blue focus:ring-brand-blue" onchange="togglePaymentInfo('card')">
+                            <div class="ml-3">
+                                <span class="block font-medium text-gray-900">Thẻ Visa / MasterCard</span>
+                                <span class="block text-sm text-gray-500">Cổng thanh toán giả lập (Demo)</span>
+                            </div>
+                        </label>
+                    </div>
+
+                    <button type="submit"
+                            class="w-full py-4 px-6 rounded-lg shadow-lg text-white font-bold text-lg bg-brand-yellow text-brand-blue hover:brightness-110 transition transform active:scale-95">
+                        Xác nhận đã Thanh toán
+                    </button>
+
+                    <p class="text-center text-sm text-gray-500 mt-4">
+                        * Sau khi bấm xác nhận, đơn đăng ký của bạn sẽ chuyển sang trạng thái <strong>"Chờ duyệt"</strong>.
+                    </p>
+                </form>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    function togglePaymentInfo(type) {
+        const qrInfo = document.getElementById('qr-info');
+        if (type === 'qr') {
+            qrInfo.classList.remove('hidden');
+        } else {
+            qrInfo.classList.add('hidden');
+        }
+    }
+</script>
