@@ -27,7 +27,6 @@
             <select asp-for="TeacherId" class="w-full rounded-md border-gray-300 shadow-sm focus:border-brand-blue focus:ring-brand-blue sm:text-sm" asp-items="ViewBag.TeacherId"></select>
         </div>
 
-        @* --- GIAO DIỆN CHỌN LỊCH (MA TRẬN) --- *@
         <div class="mb-6 bg-blue-50 p-5 rounded-lg border border-blue-100">
             <label class="block text-sm font-bold text-brand-blue mb-3">Thời khóa biểu chi tiết</label>
             <input asp-for="Schedule" type="hidden" id="ScheduleInput" />
@@ -76,7 +75,6 @@
                 <span id="schedulePreview" class="font-bold text-brand-blue">@Model.Schedule</span>
             </div>
         </div>
-        @* -------------------------------------- *@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
             <div>
@@ -129,30 +127,23 @@
     </form>
 </div>
 
-@* --- SCRIPT XỬ LÝ LOGIC --- *@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const checkboxes = document.querySelectorAll('.schedule-checkbox');
         const input = document.getElementById('ScheduleInput');
         const preview = document.getElementById('schedulePreview');
 
-        // 1. KHÔI PHỤC TRẠNG THÁI TỪ CHUỖI CŨ (Quan trọng!)
-        // Chuỗi có dạng: "T2 (Ca 1, Ca 2); T4 (Ca 1)"
         const initialSchedule = input.value;
         if (initialSchedule) {
-            const parts = initialSchedule.split(';'); // Tách từng ngày
+            const parts = initialSchedule.split(';'); 
             parts.forEach(part => {
-                // Part ví dụ: " T2 (Ca 1, Ca 2) "
                 part = part.trim();
-                // Lấy T2
                 const dayMatch = part.match(/^(T\d|CN)/);
                 if (dayMatch) {
                     const day = dayMatch[0];
-                    // Tìm tất cả số Ca trong ngoặc
                     const shiftMatches = part.matchAll(/Ca (\d)/g);
                     for (const match of shiftMatches) {
                         const shift = match[1];
-                        // Tìm checkbox tương ứng và tick nó
                         const cb = document.getElementById(`cb_${day}${shift}`);
                         if (cb) cb.checked = true;
                     }
@@ -160,7 +151,6 @@
             });
         }
 
-        // 2. CẬP NHẬT CHUỖI KHI CHECKBOX THAY ĐỔI
         function updateSchedule() {
             let selection = {};
             checkboxes.forEach(cb => {
@@ -176,7 +166,6 @@
             const dayOrder = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
             dayOrder.forEach(day => {
                 if (selection[day]) {
-                    // Sắp xếp ca tăng dần: 1, 2...
                     let shifts = selection[day].sort((a, b) => a - b).map(s => "Ca " + s).join(", ");
                     parts.push(`${day} (${shifts})`);
                 }
